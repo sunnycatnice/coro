@@ -2,6 +2,18 @@
 
 header('Content-Type:text/plain');
 
+//function folderisright that checks if the folder is right
+//the folder is right if its name starts with a number followed by a "-"
+//it returns 0 if the folder is right
+//it returns 1 if the folder is wrong
+function folderisright($key)
+{
+	if (preg_match("/^[0-9]+-/", $key))
+		return 0;
+	else
+		return 1;
+}
+
 //fileisright function that checks if the name of the file is correct
 //a correct file name is a file that starts with a number followed by a "-"
 //return 0 if the file name is correct
@@ -129,25 +141,30 @@ table th {
 	<?php
 foreach($array as $key => $value){
 	echo '<tr>';
-	echo '<td>'.$key.'</td>';
-	foreach($value as $key2 => $folder_and_file){
-	if(fileisright($folder_and_file[1]) == 0)
-		//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
-		//echo the same thing as before but it should be a iperlink, with the same name as the file
-		//but without the first 2 characters (the number and the "-")
-		echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.substr($folder_and_file[1],2).'</a></td>';
-		//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".substr($folder_and_file[1],2).".mp3".'" target="_blank">'.substr($folder_and_file[1],2).".mp3".'</a></td>';
-	elseif(fileisright($folder_and_file[1]) == -1)
-		echo '<td></td>';
-	
-		//if in the filename is present the world "skip", it will leave the column empty
-	//else it will echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
-	/*	if(strpos($folder_and_file[1], "skip") !== false){
-			echo '<td></td>';
+	if (folderisright($key) == 0)
+	{
+		//new variable to store the name of the folder without the number
+		$folder_name = substr($key, 2);
+		echo '<td>'.$folder_name.'</td>';
+		foreach($value as $key2 => $folder_and_file)
+		{
+			if(fileisright($folder_and_file[1]) == 0)
+				//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
+				//echo the same thing as before but it should be a iperlink, with the same name as the file
+				//but without the first 2 characters (the number and the "-")
+				echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.substr($folder_and_file[1],2).'</a></td>';
+			elseif(fileisright($folder_and_file[1]) == -1)
+				echo '<td></td>';
+			
+				//if in the filename is present the world "skip", it will leave the column empty
+			//else it will echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
+			/*	if(strpos($folder_and_file[1], "skip") !== false){
+					echo '<td></td>';
+				}
+				else{
+					echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
+				}*/
 		}
-		else{
-			echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
-		}*/
 	}
 	echo '</tr>';
 }
@@ -165,28 +182,23 @@ function read_files($dir) {
 	$files = array();
 	$dir_array = array();
 	$dir_array = scandir($dir);
-	foreach ($dir_array as $key => $value) {
+	foreach ($dir_array as $key => $value)
+	{
 		if ($value != "." && $value != "..") 
-	{
-			if (is_dir($dir . "/" . $value)) 
-	{
-				$files[$value] = read_files($dir . "/" . $value);
-			} 
-	else 
-	{
-		$ext = pathinfo($value, PATHINFO_EXTENSION);
+		{
+				if (is_dir($dir . "/" . $value)) 
+					$files[$value] = read_files($dir . "/" . $value);
+			else 
+			{
+				$ext = pathinfo($value, PATHINFO_EXTENSION);
 				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt") 
-		{
-		#check if $value has number into it
-		if(preg_match('/\-\d/', $value))
-		{
-			$sametipe[] = array($value);
-		}
-		else
-		{
-			$files[] = array($dir, $value, $sametipe);
+				{
+					#check if $value has number into it
+					if(preg_match('/\-\d/', $value))
+						$sametipe[] = array($value);
+					else
+						$files[] = array($dir, $value, $sametipe);
 				}
-		}
 			}
 		}
 	}
