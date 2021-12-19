@@ -2,22 +2,19 @@
 
 header('Content-Type:text/plain');
 
-//fieisright function that checks if the name of the file is correct
+//fileisright function that checks if the name of the file is correct
 //a correct file name is a file that starts with a number followed by a "-"
 //return 0 if the file name is correct
 //return -1 if the file name starts with a number, followed by a "-" and contains the world "skip"
 //return 1 if the file name is incorrec
-function fileisright($folder_and_file)
+function fileisright($file)
 {
-	if (preg_match("/^[0-9]+-/", $folder_and_file))
-	{
-		if (preg_match("/skip/", $folder_and_file))
-			return -1;
-		else
-			return 0;
-	}
-	else
-		return 1;
+	if (preg_match("/skip/", $file))
+		return -1;
+	$first_2_chars = substr($file, 0, 2);
+	if (preg_match("/^[0-9]+-/", $first_2_chars))
+		return 0;
+	return 1;
 }
 
 function fixpath($str)
@@ -136,10 +133,10 @@ foreach($array as $key => $value){
 	foreach($value as $key2 => $folder_and_file){
 	if(fileisright($folder_and_file[1]) == 0)
 		//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
-		//echo the same thing as before but the name of the file should not contain the first 2 characters
-		//this is because the first 2 characters are used to identify the order of the files
-		//the first 2 characters are the number of the file and the "-"
-		echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".substr($folder_and_file[1],2).".mp3".'" target="_blank">'.substr($folder_and_file[1],2).".mp3".'</a></td>';
+		//echo the same thing as before but it should be a iperlink, with the same name as the file
+		//but without the first 2 characters (the number and the "-")
+		echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.substr($folder_and_file[1],2).'</a></td>';
+		//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".substr($folder_and_file[1],2).".mp3".'" target="_blank">'.substr($folder_and_file[1],2).".mp3".'</a></td>';
 	elseif(fileisright($folder_and_file[1]) == -1)
 		echo '<td></td>';
 	
