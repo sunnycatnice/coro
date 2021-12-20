@@ -2,6 +2,28 @@
 
 header('Content-Type:text/plain');
 
+//constants to define better what is called what
+define("FILE_PATH", 0);
+define("FILE_NAME", 1);
+define("PRINTABLE_FILE", 0);
+define("SKIPPABLE_FILE", -1);
+define("SITE_URL", "http://www.coralesantalessandro.com/wordpress/");
+
+//class structure to store datas from every file of the current directory
+class filedata
+{
+	public $file_path;
+	public $file_name;
+	public $file_number;
+}
+
+//initialize the array to store the data of the files of the current directory
+function init_filedata($file, $folder_and_file)
+{
+	$file->file_path = $folder_and_file[FILE_PATH];
+	$file->file_name = $folder_and_file[FILE_NAME];
+}
+
 //function folderisright that checks if the folder is right
 //the folder is right if its name starts with a number followed by a "-"
 //it returns 0 if the folder is right
@@ -31,8 +53,8 @@ function fileisright($file)
 
 function fixpath($str)
 {
-$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/";
-return(str_replace($str2,"", $str));
+	$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/";
+	return(str_replace($str2,"", $str));
 }
 
 #function to print in a table the output of the function read_files
@@ -42,7 +64,7 @@ return(str_replace($str2,"", $str));
 #print on the columns the name of the files (third array depth first index)
 #every file is clickable and will open the file in a new window
 function print_table($array){
-echo '<table>'; ?>
+	echo '<table>'; ?>
 <style>
 table {
 	border: 1px solid #ccc;
@@ -139,36 +161,29 @@ table th {
 <tbody>
 	<tr>
 	<?php
-foreach($array as $key => $value){
-	echo '<tr>';
-	if (folderisright($key) == 0)
-	{
-		//new variable to store the name of the folder without the number
-		$folder_name = substr($key, 2);
-		echo '<td>'.$folder_name.'</td>';
-		foreach($value as $key2 => $folder_and_file)
+		foreach($array as $key => $value)
 		{
-			if(fileisright($folder_and_file[1]) == 0)
-				//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
-				//echo the same thing as before but it should be a iperlink, with the same name as the file
-				//but without the first 2 characters (the number and the "-")
-				echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.substr($folder_and_file[1],2).'</a></td>';
-			elseif(fileisright($folder_and_file[1]) == -1)
-				echo '<td></td>';
-			
-				//if in the filename is present the world "skip", it will leave the column empty
-			//else it will echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
-			/*	if(strpos($folder_and_file[1], "skip") !== false){
-					echo '<td></td>';
+			echo '<tr>';
+			if (folderisright($key) == 0)
+			{
+				//new variable to store the name of the folder without the number
+				$folder_name = substr($key, 2);
+				echo '<td>'.$folder_name.'</td>';
+				foreach($value as $key2 => $folder_and_file)
+				{
+					$file = new filedata();
+					init_filedata($file, $folder_and_file);
+					if(fileisright($file->file_name) == PRINTABLE_FILE)
+						//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+						echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+					elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
+						echo '<td></td>';
 				}
-				else{
-					echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($folder_and_file[0])."/".$folder_and_file[1].'" target="_blank">'.$folder_and_file[1].'</a></td>';
-				}*/
+			}
+			echo '</tr>';
 		}
-	}
-	echo '</tr>';
-}
-echo '</table>'; ?>
+		echo '</table>';
+	?>
 	</tr>
 </tbody>
 <?php
@@ -178,7 +193,8 @@ echo '</table>'; ?>
 #it should be recursive, so it will return the files in subdirectories
 #it creates an array of arrays, where the first array is the directory, and the second is the file
 #it will only return mp3 and PDF files
-function read_files($dir) {
+function read_files($dir)
+{
 	$files = array();
 	$dir_array = array();
 	$dir_array = scandir($dir);
@@ -186,7 +202,7 @@ function read_files($dir) {
 	{
 		if ($value != "." && $value != "..") 
 		{
-				if (is_dir($dir . "/" . $value)) 
+			if (is_dir($dir . "/" . $value)) 
 					$files[$value] = read_files($dir . "/" . $value);
 			else 
 			{
