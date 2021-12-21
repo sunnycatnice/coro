@@ -8,13 +8,24 @@ define("FILE_NAME", 1);
 define("PRINTABLE_FILE", 0);
 define("SKIPPABLE_FILE", -1);
 define("SITE_URL", "http://www.coralesantalessandro.com/wordpress/");
+define("NOT_DUPLICATE", 0);
+define("DUPLICATE_PRESENT", 1);
 
-//class structure to store datas from every file of the current directory
+//class structure to store data from every file of the current directory
 class filedata
 {
+	//generic info
 	public $file_path;
 	public $file_name;
+}
+
+//class structure to store files number and index
+class filesnumbers
+{
+	//specific info
+	public $file_index;
 	public $file_number;
+	public $duplicate;
 }
 
 //initialize the array to store the data of the files of the current directory
@@ -22,6 +33,18 @@ function init_filedata($file, $folder_and_file)
 {
 	$file->file_path = $folder_and_file[FILE_PATH];
 	$file->file_name = $folder_and_file[FILE_NAME];
+}
+function init_filenumbers($file, $dir, $value, $i)
+{
+	$file->file_index = $i;
+	$file->file_number = substr($file, 0, 1);
+}
+
+//function check_duplicate($file, $files_array) to check if there are more than one file that starts with the same number
+//it returns 0 if there are no duplicates, 1 if there are duplicates
+function check_duplicate($file, $files_array)
+{
+
 }
 
 //function folderisright that checks if the folder is right
@@ -174,7 +197,6 @@ table th {
 					$file = new filedata();
 					init_filedata($file, $folder_and_file);
 					if(fileisright($file->file_name) == PRINTABLE_FILE)
-						//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
 						echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
 					elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 						echo '<td></td>';
@@ -192,16 +214,19 @@ table th {
 #php function that reads the files from the directory passed to it
 #it should be recursive, so it will return the files in subdirectories
 #it creates an array of arrays, where the first array is the directory, and the second is the file
-#it will only return mp3 and PDF files
+#it will only return mp3, PDF and txt files
 function read_files($dir)
 {
 	$files = array();
 	$dir_array = array();
 	$dir_array = scandir($dir);
+	$i = 0;
 	foreach ($dir_array as $key => $value)
 	{
 		if ($value != "." && $value != "..") 
 		{
+			$file = new filenumbers();
+			init_filenumbers($file, $dir, $value, $i);
 			if (is_dir($dir . "/" . $value)) 
 					$files[$value] = read_files($dir . "/" . $value);
 			else 
@@ -209,11 +234,15 @@ function read_files($dir)
 				$ext = pathinfo($value, PATHINFO_EXTENSION);
 				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt") 
 				{
-					#check if $value has number into it
-					if(preg_match('/\-\d/', $value))
-						$sametipe[] = array($value);
-					else
-						$files[] = array($dir, $value, $sametipe);
+					//if $file->file_number and $file->file_index are the same, it means that it has to save the file in the same array
+
+
+					//if (check_if_duplicate($fils->file_number, $file->file_index) == true)
+						//save in the array in the same position the files with the same number
+
+					#fill the array files with valid files
+					$files[] = array($dir, $value);
+					$i++;
 				}
 			}
 		}
@@ -222,5 +251,5 @@ function read_files($dir)
 }
 
 #print the array of arrays returned by the function get_files
-#print_r(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
-print_table(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
+print_r(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
+//print_table(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
