@@ -89,7 +89,7 @@ function print_2_files($file, $value, $key)
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
 		echo '<td><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>';
-		echo ' - <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+		echo '- <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
 	}
 	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 		echo '<td></td>';
