@@ -57,6 +57,44 @@ function fixpath($str)
 	return(str_replace($str2,"", $str));
 }
 
+//function check_2_files
+//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
+//the function returns 0 if there are at least 2 files with the same first 2 characters
+//it returns 1 if there are less than 2 files with the same first 2 characters
+function check_2_files($filename, $files)
+{
+	$first_2_chars = substr($filename, 0, 2);
+	$count = 0;
+	foreach ($files as $file)
+	{
+		if (substr($file[FILE_NAME], 0, 2) == $first_2_chars)
+			$count++;
+	}
+	if ($count >= 2)
+		return 0;
+	else
+		return 1;
+}
+
+function print_single_file($file)
+{
+	if(fileisright($file->file_name) == PRINTABLE_FILE)
+		echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
+		echo '<td></td>';
+}
+
+function print_2_files($file, $value, $key)
+{
+	if(fileisright($file->file_name) == PRINTABLE_FILE)
+	{
+		echo '<td><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>';
+		echo ' - <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+	}
+	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
+		echo '<td></td>';
+}
+
 #function to print in a table the output of the function read_files
 #the first array depth is the name of the folder
 #the second array depth is an array containing the path and the name of the file
@@ -173,11 +211,12 @@ table th {
 				{
 					$file = new filedata();
 					init_filedata($file, $folder_and_file);
-					if(fileisright($file->file_name) == PRINTABLE_FILE)
-						//echo '<td><a href="http://www.coralesantalessandro.com/wordpress/'.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
-						echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
-					elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
-						echo '<td></td>';
+					//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
+					//then use the function print_2_files
+					if (check_2_files($file->file_name, $value) == 0)
+						print_2_files($file, $value, $key2);
+					else
+						print_single_file($file);
 				}
 			}
 			echo '</tr>';
@@ -197,24 +236,24 @@ function read_files($dir)
 {
 	$files = array();
 	$dir_array = array();
+	$i = 2;
 	$dir_array = scandir($dir);
 	foreach ($dir_array as $key => $value)
 	{
 		if ($value != "." && $value != "..") 
 		{
 			if (is_dir($dir . "/" . $value)) 
-					$files[$value] = read_files($dir . "/" . $value);
-			else 
+			{
+				$files[$value] = read_files($dir . "/" . $value);
+			}
+			else
 			{
 				$ext = pathinfo($value, PATHINFO_EXTENSION);
 				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt") 
 				{
-					#check if $value has number into it
-					if(preg_match('/\-\d/', $value))
-						$sametipe[] = array($value);
-					else
-						$files[] = array($dir, $value, $sametipe);
+						$files[$i] = array($dir, $value);
 				}
+				$i++;
 			}
 		}
 	}
@@ -224,3 +263,4 @@ function read_files($dir)
 #print the array of arrays returned by the function get_files
 #print_r(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
 print_table(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
+?>
