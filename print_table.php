@@ -24,23 +24,37 @@ function init_filedata($file, $folder_and_file)
 	$file->file_name = $folder_and_file[FILE_NAME];
 }
 
+//scroll through the $key string and increment the $count variable if you find a number in the first 4 characters of $key
+function get_file_number($key)
+{
+	$count = 1;
+	for ($i = 0; $i < 4; $i++)
+	{
+		if (is_numeric(substr($key, $i, 1)))
+			$count++;
+	}
+	return $count;
+}
+
 //function folderisright that checks if the folder is right
 //the folder is right if its name starts with a number followed by a "-"
 //it returns 0 if the folder is right
 //it returns 1 if the folder is wrong
 function folderisright($key)
 {
-	if (preg_match("/^[0-9]+-/", $key))
+	$first_4_chars = substr($key, 0, 4);
+	//create a variable $first_chars that contains only the numbers found in $first_4_chars with the last character being the "-"
+	$first_chars = preg_match_all('/^[0-9]+-/', $first_4_chars, $first_chars);
+	if (preg_match("/[0-9]/", $first_chars))
 		return 0;
-	else
-		return 1;
+	return 1;
 }
 
 //fileisright function that checks if the name of the file is correct
 //a correct file name is a file that starts with a number followed by a "-"
 //return 0 if the file name is correct
 //return -1 if the file name starts with a number, followed by a "-" and contains the world "skip"
-//return 1 if the file name is incorrec
+//return 1 if the file name is incorrect
 function fileisright($file)
 {
 	if (preg_match("/skip/", $file))
@@ -50,6 +64,21 @@ function fileisright($file)
 		return 0;
 	return 1;
 }
+
+//folderisright2 function that checks if the name of the file is correct
+//a correct file name is a file that starts with a number up to the first "-"
+//return 0 if the file name is correct
+//return 1 if the file name is incorrect
+function folderisright2($file)
+{
+	$first_4_chars = substr($file, 0, 4);
+	//create a variable $first_chars that contains only the numbers found in $first_4_chars with the last character being the "-"
+	$first_chars = preg_replace("/[^0-9]+/", "", $first_4_chars);
+	if (preg_match("/^[0-9]+-/", $first_chars))
+		return 0;
+	return 1;
+}
+
 
 function fixpath($str)
 {
@@ -205,7 +234,9 @@ table th {
 			if (folderisright($key) == 0)
 			{
 				//new variable to store the name of the folder without the number
-				$folder_name = substr($key, 2);
+				//$folder_name = substr($key, get_file_number($key));
+				//show numbers to debug
+				$folder_name = substr($key, 0);
 				echo '<td>'.$folder_name.'</td>';
 				foreach($value as $key2 => $folder_and_file)
 				{
