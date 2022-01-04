@@ -89,7 +89,7 @@ function print_2_files($file, $value, $key)
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
 		echo '<td><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>';
-		echo '- <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+		echo ' - <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
 	}
 	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 		echo '<td></td>';
@@ -214,7 +214,11 @@ table th {
 					//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
 					//then use the function print_2_files
 					if (check_2_files($file->file_name, $value) == 0)
-						print_2_files($file, $value, $key2);
+					{
+						//use the function print_2_files only for odd keys
+						if ($key2 % 2 == 0)
+							print_2_files($file, $value, $key2);
+					}
 					else
 						print_single_file($file);
 				}
