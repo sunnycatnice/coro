@@ -29,14 +29,27 @@ function init_filedata($file, $folder_and_file)
 function get_file_number($file_name)
 {
 	$file_number = "";
+	settype($file_number, "integer");
 	$i = 0;
-	while($file_name[$i] != '-')
+	//scroll through the file name as long as the character is a number
+	while(is_numeric($file_name[$i]))
 	{
-		$file_number .= $file_name[$i];
+		if ($i == 0)
+		{
+			$file_number = $file_name[$i];
+		}
+		else
+		{
+			$file_number = $file_number . $file_name[$i];
+		}
 		$i++;
 	}
 	return $file_number;
 }
+
+//function get_number to extract from a string the number before the character '-'
+//it must return the number as a number
+
 
 //function folderisright that checks if the folder is right
 //the folder is right if its name starts with a number followed by a "-"
@@ -159,31 +172,25 @@ function get_first_4_element_length($key)
 	return $count;
 }
 
-//functon create_right_indexed($array)
-//it returns an array with the same elements of $array but with the right index
-function create_right_indexed($array)
+function get_folder_numbers($array)
 {
-	$array_right_indexed = array();
 	$i = 0;
-	//create a variable $confirm that contains the number of the folder
-	$confirm = get_file_number($array[$i]);
-	//while loop that goes through the array
-	//if $confirm = $i, then the folder number is the same as the index of the array
-	//if that condition is true, then push the element of the array in the array $array_right_indexed
-	//exit the loop when the folder number is the same as the index of the array
-	while ($confirm <= $i)
+	$folder_numbers = array();
+	foreach ($array as $key => $value)
 	{
-		//search for the element of the array that has the same folder number as the index of the array
-		foreach ($array as $key => $value)
-		{
-			if (get_file_number($value) == $i)
-			{
-				array_push($array_right_indexed, $value);
-				break;
-			}
-		}
+		$folder_numbers[$i] = get_file_number($key);
+		$i++;
 	}
-	return $array_right_indexed;
+	return $folder_numbers;
+}
+
+//functon create_right_indexed($array)
+//it returns the same array sorted by the first numbers found in the folder name
+function create_right_index($array)
+{
+	//sort the multi-dimensional array by the first numbers appearing in the folder name
+	array_multisort(array_map('get_file_number', array_keys($array)), SORT_ASC, $array);
+	return $array;
 }
 
 #function to print in a table the output of the function read_files
@@ -235,7 +242,7 @@ table th {
 	table caption {
 	font-size: 1.3em;
 	}
-	
+
 	table thead {
 	border: none;
 	clip: rect(0 0 0 0);
@@ -246,20 +253,20 @@ table th {
 	position: absolute;
 	width: 1px;
 	}
-	
+
 	table tr {
 	border-bottom: 3px solid #ddd;
 	display: block;
 	margin-bottom: .625em;
 	}
-	
+
 	table td {
 	border-bottom: 1px solid #ddd;
 	display: block;
 	font-size: .8em;
 	text-align: right;
 	}
-	
+
 	table td::before {
 	/*
 	* aria-label has no advantage, it won't be read inside a table
@@ -270,7 +277,7 @@ table th {
 	font-weight: bold;
 	text-transform: uppercase;
 	}
-	
+
 	table td:last-child {
 	border-bottom: 0;
 	}
@@ -291,33 +298,29 @@ table th {
 	<tr>
 <?php
 $found = 0;
-//$right_indexed = create_right_index($array);
-//print_r($right_indexed);
 	foreach($array as $key => $value)
-	{
-		$i = 0;
-		echo '<tr>';
-		//find a way to organize the folder name using int comparison and loops//
-		$current = get_file_number($key);		
-		echo '<td>'.(int)get_file_number($key).'</td>';
-		foreach($value as $key2 => $folder_and_file)
 		{
-			$file = new filedata();
-			init_filedata($file, $folder_and_file);
-			//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
-			//then use the function print_2_files
-			if (check_2_files($file->file_name, $value) == 0)
+			echo '<tr>';
+			if (folderisright($key) == 0)
 			{
-				//use the function print_2_files only for odd keys
-				if ($key2 % 2 == 0)
-					print_2_files($file, $value, $key2);
+				//new variable to store the name of the folder without the number
+				$folder_name = substr($key, 2);
+				echo '<td>'.$folder_name.'</td>';
+				foreach($value as $key2 => $folder_and_file)
+				{
+					$file = new filedata();
+					init_filedata($file, $folder_and_file);
+					//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
+					//then use the function print_2_files
+					if (check_2_files($file->file_name, $value) == 0)
+						print_2_files($file, $value, $key2);
+					else
+						print_single_file($file);
+				}
 			}
-			else
-				print_single_file($file);
+			echo '</tr>';
 		}
-		echo '</tr>';
-	}
-	echo '</table>';
+		echo '</table>';
 ?>
 </tr>
 </tbody>
@@ -336,16 +339,16 @@ function read_files($dir)
 	$dir_array = scandir($dir);
 	foreach ($dir_array as $key => $value)
 	{
-		if ($value != "." && $value != "..") 
+		if ($value != "." && $value != "..")
 		{
-			if (is_dir($dir . "/" . $value)) 
+			if (is_dir($dir . "/" . $value))
 			{
 				$files[$value] = read_files($dir . "/" . $value);
 			}
 			else
 			{
 				$ext = pathinfo($value, PATHINFO_EXTENSION);
-				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt") 
+				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt")
 				{
 						$files[$i] = array($dir, $value);
 				}
@@ -355,16 +358,8 @@ function read_files($dir)
 	}
 	return $files;
 }
-
 #print the array of arrays returned by the function get_files
 print_r(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
 #print_table(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved"));
-
-foreach ($array as $key => $value)
-	{
-		echo $key."<br>";
-		$folder_numbers[$i] = get_file_number($key);
-		$i++;
-	}
 
 ?>

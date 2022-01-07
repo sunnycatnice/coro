@@ -185,27 +185,12 @@ function get_folder_numbers($array)
 }
 
 //functon create_right_indexed($array)
-//it returns an array with the same elements of $array but with the right index
+//it returns the same array sorted by the first numbers found in the folder name
 function create_right_index($array)
 {
-	$array_right_indexed = array();
-	$i = 1;
-	//$folder_numbers = get_folder_numbers($array);	
-	//loop through the array $array
-	foreach ($array as $key => $value)
-	{
-		//if $i is equal to the folder number
-		//add the folder name to the array $array_right_indexed
-		
-		if ($i == get_file_number($key))
-		{
-			$array_right_indexed[$i] = $key;
-			$i++;
-		}
-		echo  get_file_number($key)."<br>";
-	}
-	print_r($array_right_indexed);
-	return $array_right_indexed;
+	//sort the multi-dimensional array by the first numbers appearing in the folder name
+	array_multisort(array_map('get_file_number', array_keys($array)), SORT_ASC, $array);
+	return $array;
 }
 
 #function to print in a table the output of the function read_files
@@ -257,7 +242,7 @@ table th {
 	table caption {
 	font-size: 1.3em;
 	}
-	
+
 	table thead {
 	border: none;
 	clip: rect(0 0 0 0);
@@ -268,20 +253,20 @@ table th {
 	position: absolute;
 	width: 1px;
 	}
-	
+
 	table tr {
 	border-bottom: 3px solid #ddd;
 	display: block;
 	margin-bottom: .625em;
 	}
-	
+
 	table td {
 	border-bottom: 1px solid #ddd;
 	display: block;
 	font-size: .8em;
 	text-align: right;
 	}
-	
+
 	table td::before {
 	/*
 	* aria-label has no advantage, it won't be read inside a table
@@ -292,7 +277,7 @@ table th {
 	font-weight: bold;
 	text-transform: uppercase;
 	}
-	
+
 	table td:last-child {
 	border-bottom: 0;
 	}
@@ -313,31 +298,29 @@ table th {
 	<tr>
 <?php
 $found = 0;
-
 	foreach($array as $key => $value)
-	{
-		$i = 0;
-		echo '<tr>';
-		//find a way to organize the folder name using int comparison and loops//	
-		echo '<td>'.(int)get_file_number($key).'</td>';
-		foreach($value as $key2 => $folder_and_file)
 		{
-			$file = new filedata();
-			init_filedata($file, $folder_and_file);
-			//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
-			//then use the function print_2_files
-			if (check_2_files($file->file_name, $value) == 0)
+			echo '<tr>';
+			if (folderisright($key) == 0)
 			{
-				//use the function print_2_files only for odd keys
-				if ($key2 % 2 == 0)
-					print_2_files($file, $value, $key2);
+				//new variable to store the name of the folder without the number
+				$folder_name = substr($key, 2);
+				echo '<td>'.$folder_name.'</td>';
+				foreach($value as $key2 => $folder_and_file)
+				{
+					$file = new filedata();
+					init_filedata($file, $folder_and_file);
+					//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
+					//then use the function print_2_files
+					if (check_2_files($file->file_name, $value) == 0)
+						print_2_files($file, $value, $key2);
+					else
+						print_single_file($file);
+				}
 			}
-			else
-				print_single_file($file);
+			echo '</tr>';
 		}
-		echo '</tr>';
-	}
-	echo '</table>';
+		echo '</table>';
 ?>
 </tr>
 </tbody>
@@ -356,16 +339,16 @@ function read_files($dir)
 	$dir_array = scandir($dir);
 	foreach ($dir_array as $key => $value)
 	{
-		if ($value != "." && $value != "..") 
+		if ($value != "." && $value != "..")
 		{
-			if (is_dir($dir . "/" . $value)) 
+			if (is_dir($dir . "/" . $value))
 			{
 				$files[$value] = read_files($dir . "/" . $value);
 			}
 			else
 			{
 				$ext = pathinfo($value, PATHINFO_EXTENSION);
-				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt") 
+				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt")
 				{
 						$files[$i] = array($dir, $value);
 				}
@@ -375,13 +358,10 @@ function read_files($dir)
 	}
 	return $files;
 }
-
-//creare un file temporaneo che mi serva per il sorting
-//oppure convertire tutti nomi di array in int e fare un sort, poi ricostruire l'array
-
 #print the array of arrays returned by the function get_files
 //print_r(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
-$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
-print_r($right_indexed);
+//$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
+//print_r($right_indexed);
+print_table(create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests")));
 #print_table(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 ?>
