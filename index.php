@@ -29,7 +29,7 @@ function init_filedata($file, $folder_and_file)
 function get_file_number($file_name)
 {
 	$file_number = "";
-	settype($file_number, "integer");
+	settype($file_number, "float");
 	$i = 0;
 	//scroll through the file name as long as the character is a number
 	while(is_numeric($file_name[$i]))
@@ -46,11 +46,6 @@ function get_file_number($file_name)
 	}
 	return $file_number;
 }
-
-//function get_number to extract from a string the number before the character '-'
-//it must return the number as a number
-
-
 //function folderisright that checks if the folder is right
 //the folder is right if its name starts with a number followed by a "-"
 //it returns 0 if the folder is right
@@ -79,21 +74,6 @@ function fileisright($file)
 		return 0;
 	return 1;
 }
-
-//folderisright2 function that checks if the name of the file is correct
-//a correct file name is a file that starts with a number up to the first "-"
-//return 0 if the file name is correct
-//return 1 if the file name is incorrect
-function folderisright2($file)
-{
-	$first_4_chars = substr($file, 0, 4);
-	//create a variable $first_chars that contains only the numbers found in $first_4_chars with the last character being the "-"
-	$first_chars = preg_replace("/[^0-9]+/", "", $first_4_chars);
-	if (preg_match("/^[0-9]+-/", $first_chars))
-		return 0;
-	return 1;
-}
-
 
 function fixpath($str)
 {
@@ -139,27 +119,6 @@ function print_2_files($file, $value, $key)
 		echo '<td></td>';
 }
 
-//function convert folder number from decimal to binary
-//it returns a string with the folder number in binary
-function convert_folder_number_to_binary($folder_number)
-{
-	$binary_folder_number = "";
-	$binary_folder_number = decbin($folder_number);
-	$binary_folder_number = str_pad($binary_folder_number, 4, "0", STR_PAD_LEFT);
-	return $binary_folder_number;
-}
-//function to change the name of the folder
-//the first 4 characters of the folder name are replaced by the folder number in binary
-//it returns the new name of the folder
-function change_folder_name($folder_name, $folder_number)
-{
-	//create a variable $binary_folder_number that contains the folder number in binary
-	$binary_folder_number = convert_folder_number_to_binary($folder_number);
-	$folder_name = substr($folder_name, get_file_number($folder_name));
-	$binary_folder_name = $binary_folder_number."-".$folder_name;
-	return $binary_folder_name;
-}
-
 //function to get how long is the number of the folder
 function get_first_4_element_length($key)
 {
@@ -172,16 +131,15 @@ function get_first_4_element_length($key)
 	return $count;
 }
 
-function get_folder_numbers($array)
+//function to estrapolate the name of the file or the folder
+function get_name($key)
 {
+	$name = "";
 	$i = 0;
-	$folder_numbers = array();
-	foreach ($array as $key => $value)
-	{
-		$folder_numbers[$i] = get_file_number($key);
+	while(is_numeric(substr($key, $i, 1)) || substr($key, $i, 1) == "." || substr($key, $i, 1) == "-")
 		$i++;
-	}
-	return $folder_numbers;
+	$name = substr($key, $i);
+	return $name;
 }
 
 //functon create_right_indexed($array)
@@ -304,7 +262,7 @@ $found = 0;
 			if (folderisright($key) == 0)
 			{
 				//new variable to store the name of the folder without the number
-				$folder_name = substr($key, 2);
+				$folder_name = get_name($key);
 				echo '<td>'.$folder_name.'</td>';
 				foreach($value as $key2 => $folder_and_file)
 				{
@@ -364,4 +322,3 @@ function read_files($dir)
 //print_r($right_indexed);
 print_table(create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests")));
 #print_table(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
-?>
