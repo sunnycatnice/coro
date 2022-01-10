@@ -52,12 +52,23 @@ function get_file_number($file_name)
 //it returns 1 if the folder is wrong
 function folderisright($key)
 {
-	$first_4_chars = substr($key, 0, 4);
-	//create a variable $first_chars that contains only the numbers found in $first_4_chars with the last character being the "-"
-	$first_chars = preg_match_all('/^[0-9]+-/', $first_4_chars, $first_chars);
-	if (preg_match("/[0-9]/", $first_chars))
-		return 0;
-	return 1;
+	//loop through the folder name as long as the character is a number
+	//if none of the characters is a number, return 1
+	//if there is at least one number, check if the number is followed by a "-"
+	//if not, return 1
+	//if the folder is right, return 0
+	$i = 0;
+	while(is_numeric($key[$i]))
+		$i++;
+	if ($i == 0)
+		return 1;
+	else
+	{
+		if ($key[$i] != "-")
+			return 1;
+		else
+			return 0;
+	}
 }
 
 //fileisright function that checks if the name of the file is correct
@@ -320,5 +331,5 @@ function read_files($dir)
 //print_r(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
-print_table(create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests")));
+print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved")));
 #print_table(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
