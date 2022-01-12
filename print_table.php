@@ -59,9 +59,13 @@ function folderisright($key)
 	//if the folder is right, return 0
 	$i = 0;
 	while(is_numeric($key[$i]))
+	{
 		$i++;
+	}
 	if ($i == 0)
+	{
 		return 1;
+	}
 	else
 	{
 		if ($key[$i] != "-")
