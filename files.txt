@@ -1,5 +1,6 @@
 Files that appear once in every subdirectory
 
+.DS_Store,/Users/dmangola/Downloads/folder3
 jubilo.mp3,/Users/dmangola/Downloads/folder3/audio/bach-jubilo
 ave_verum.mp3,/Users/dmangola/Downloads/folder3/audio/elgar/ave_verum
 pastores.mp3,/Users/dmangola/Downloads/folder3/audio/fxbrixi

@@ -1,4 +1,5 @@
 import os
+from subprocess import call
 
 #function to make a list of every file in every subdirectory of the path
 #the function takes the path of the directory as an argument
@@ -64,4 +65,17 @@ def make_files(path, path_txt_file):
 	#close the txt file
 	text.close()
 
-make_files("/Users/dmangola/Downloads/folder3", "/Users/dmangola/Desktop/coro/files.txt")
+#make_files("/Users/dmangola/Downloads/folder3", "/Users/dmangola/Desktop/coro/files.txt")
+
+def cd_open(path):
+	#cd to the path taken from console input
+	#delete the filename from the path string and save it in a variable
+	path_without_filename = path[:path.rfind("/")]
+
+
+	os.chdir(path_without_filename)
+	#then open the current direcory in finder
+	call(["open", "-R" , path])
+
+input = input("Enter the path of the directory: ")
+cd_open(input)
