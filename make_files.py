@@ -49,7 +49,7 @@ def make_files(path, path_txt_file):
 		#if the name of the current file appears only once in every subdirectory of the path
 		if count == 1:
 			#print the name of the current file and the path of the file
-			text.write(file[0] + "," + file[1] + "\n")
+			text.write(file[1] + "/" + file[0] + "\n")
 	#write on the txt file the sentence "files that appear more than once in every subdirectory"
 	text.write("\nFiles that appear more than once in every subdirectory\n\n")
 	#now print in the second part of the txt file
@@ -61,7 +61,7 @@ def make_files(path, path_txt_file):
 		#if the name of the current file appears more than once in every subdirectory of the path
 		if count > 1:
 			#print the name of the current file and the path of the file
-			text.write(file[1] + "\\" + file[0] + "\n")
+			text.write(file[1] + "/" + file[0] + "\n")
 	#close the txt file
 	text.close()
 

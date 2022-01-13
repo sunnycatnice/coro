@@ -17,6 +17,9 @@ class filedata
 	public $file_number;
 }
 
+//global variable to store wich filenumber is printed in the same column
+$number_printed_same_clmn = -1;
+
 //initialize the array to store the data of the files of the current directory
 function init_filedata($file, $folder_and_file)
 {
@@ -29,7 +32,7 @@ function init_filedata($file, $folder_and_file)
 function get_file_number($file_name)
 {
 	$file_number = "";
-	settype($file_number, "float");
+	settype($file_number, "integer");
 	$i = 0;
 	//scroll through the file name as long as the character is a number
 	while(is_numeric($file_name[$i]))
@@ -52,12 +55,27 @@ function get_file_number($file_name)
 //it returns 1 if the folder is wrong
 function folderisright($key)
 {
-	$first_4_chars = substr($key, 0, 4);
-	//create a variable $first_chars that contains only the numbers found in $first_4_chars with the last character being the "-"
-	$first_chars = preg_match_all('/^[0-9]+-/', $first_4_chars, $first_chars);
-	if (preg_match("/[0-9]/", $first_chars))
-		return 0;
-	return 1;
+	//loop through the folder name as long as the character is a number
+	//if none of the characters is a number, return 1
+	//if there is at least one number, check if the number is followed by a "-"
+	//if not, return 1
+	//if the folder is right, return 0
+	$i = 0;
+	while(is_numeric($key[$i]))
+	{
+		$i++;
+	}
+	if ($i == 0)
+	{
+		return 1;
+	}
+	else
+	{
+		if ($key[$i] != "-")
+			return 1;
+		else
+			return 0;
+	}
 }
 
 //fileisright function that checks if the name of the file is correct
@@ -102,6 +120,12 @@ function check_2_files($filename, $files)
 
 function print_single_file($file)
 {
+	//if this file is alrady printed in the same column, skip everything
+	// if ($file->file_number == $number_printed_same_clmn)
+	// {
+	// 	$number_printed_same_clmn = -1;
+	// 	return;
+	// }
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 		echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
 	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
@@ -110,6 +134,9 @@ function print_single_file($file)
 
 function print_2_files($file, $value, $key)
 {
+	$number_printed_same_clmn  = get_file_number($file->file_name);
+	echo "entro";
+	echo $number_printed_same_clmn;
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
 		echo '<td><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>';
@@ -136,7 +163,7 @@ function get_name($key)
 {
 	$name = "";
 	$i = 0;
-	while(is_numeric(substr($key, $i, 1)) || substr($key, $i, 1) == "." || substr($key, $i, 1) == "-")
+	while(is_numeric(substr($key, $i, 1)) || substr($key, $i, 1) == "-")
 		$i++;
 	$name = substr($key, $i);
 	return $name;
@@ -255,30 +282,37 @@ table th {
 <tbody>
 	<tr>
 <?php
-$found = 0;
 	foreach($array as $key => $value)
+	{
+		echo '<tr>';
+		if (folderisright($key) == 0)
 		{
-			echo '<tr>';
-			if (folderisright($key) == 0)
+			//new variable to store the name of the folder without the number
+			$found = 0;
+			$number_printed_same_clmn = 0;
+			$folder_name = get_name($key);
+			echo '<td>'.$folder_name.'</td>';
+			foreach($value as $key2 => $folder_and_file)
 			{
-				//new variable to store the name of the folder without the number
-				$folder_name = get_name($key);
-				echo '<td>'.$folder_name.'</td>';
-				foreach($value as $key2 => $folder_and_file)
+				$file = new filedata();
+				init_filedata($file, $folder_and_file);
+				//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
+				//then use the function print_2_files
+				if ($found == 0)
 				{
-					$file = new filedata();
-					init_filedata($file, $folder_and_file);
-					//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
-					//then use the function print_2_files
 					if (check_2_files($file->file_name, $value) == 0)
 						print_2_files($file, $value, $key2);
 					else
 						print_single_file($file);
+					$found++;
 				}
+				else
+					print_single_file($file);
 			}
-			echo '</tr>';
 		}
-		echo '</table>';
+		echo '</tr>';
+	}
+	echo '</table>';
 ?>
 </tr>
 </tbody>
@@ -317,8 +351,8 @@ function read_files($dir)
 	return $files;
 }
 #print the array of arrays returned by the function get_files
-//print_r(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
+print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
-print_table(create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests")));
-#print_table(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
+//print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved")));
+//print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));

@@ -96,31 +96,46 @@ function fixpath($str)
 	return(str_replace($str2,"", $str));
 }
 
-//function check_2_files
-//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
-//the function returns 0 if there are at least 2 files with the same first 2 characters
-//it returns 1 if there are less than 2 files with the same first 2 characters
-function check_2_files($filename, $files)
+//function check_2_files($file_name, $file_number, $key, $file_array)
+//if the current file number is equal to the next one, it means that the file is a duplicate, then the function returns 0
+//if the current file number is not equal to the next one, it means that the file is not a duplicate, then the function returns 1
+function check_2_files($file_name, $key, $file_array)
 {
-	$first_2_chars = substr($filename, 0, 2);
-	$count = 0;
-	foreach ($files as $file)
+	$file_number = get_file_number($file_name);
+	$next_file_number = get_file_number($file_array[$key + 1][FILE_NAME]);
+	//execute the if only if $key is even
+	if ($key % 2 == 0)
 	{
-		if (substr($file[FILE_NAME], 0, 2) == $first_2_chars)
-			$count++;
+		if ($file_number == $next_file_number)
+			return 0;
+		else
+			return 1;
 	}
-	if ($count >= 2)
-		return 0;
 	else
 		return 1;
 }
 
-function print_single_file($file)
+function print_single_file($file, $isprinted)
 {
-	if(fileisright($file->file_name) == PRINTABLE_FILE)
-		echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
-	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
-		echo '<td></td>';
+	if ($isprinted == 0 || $isprinted == 1)
+	{
+		if(fileisright($file->file_name) == PRINTABLE_FILE)
+			echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+		elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
+			echo '<td></td>';
+	}
+	else
+	{
+		//if the filename of the current file is equal to the filename of $isprinted, then do not print the file
+		if ($file->file_name != $isprinted)
+		{
+			//echo $isprinted;
+			if(fileisright($file->file_name) == PRINTABLE_FILE)
+				echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+			elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
+				echo '<td></td>';
+		}
+	}
 }
 
 function print_2_files($file, $value, $key)
@@ -128,10 +143,12 @@ function print_2_files($file, $value, $key)
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
 		echo '<td><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>';
-		echo ' - <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+		echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+		return $value[$key+1][FILE_NAME];
 	}
 	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 		echo '<td></td>';
+	return 1;
 }
 
 //function to get how long is the number of the folder
@@ -270,30 +287,27 @@ table th {
 <tbody>
 	<tr>
 <?php
-$found = 0;
 	foreach($array as $key => $value)
+	{
+		echo '<tr>';
+		if (folderisright($key) == 0)
 		{
-			echo '<tr>';
-			if (folderisright($key) == 0)
+			$isprinted = 0;
+			$folder_name = get_name($key);
+			echo '<td>'.$folder_name.'</td>';
+			foreach($value as $key2 => $folder_and_file)
 			{
-				//new variable to store the name of the folder without the number
-				$folder_name = get_name($key);
-				echo '<td>'.$folder_name.'</td>';
-				foreach($value as $key2 => $folder_and_file)
-				{
-					$file = new filedata();
-					init_filedata($file, $folder_and_file);
-					//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
-					//then use the function print_2_files
-					if (check_2_files($file->file_name, $value) == 0)
-						print_2_files($file, $value, $key2);
-					else
-						print_single_file($file);
-				}
+				$file = new filedata();
+				init_filedata($file, $folder_and_file);
+				if (check_2_files($file->file_name, $key2, $value) == 0)
+					$isprinted = print_2_files($file, $value, $key2);
+				else
+					print_single_file($file, $isprinted);
 			}
-			echo '</tr>';
 		}
-		echo '</table>';
+		echo '</tr>';
+	}
+	echo '</table>';
 ?>
 </tr>
 </tbody>
@@ -332,8 +346,8 @@ function read_files($dir)
 	return $files;
 }
 #print the array of arrays returned by the function get_files
-//print_r(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
+//print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
 print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved")));
-#print_table(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
+//print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
