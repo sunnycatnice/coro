@@ -120,7 +120,7 @@ function print_single_file($file, $isprinted)
 	if ($isprinted == 0 || $isprinted == 1)
 	{
 		if(fileisright($file->file_name) == PRINTABLE_FILE)
-			echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+			echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
 		elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 			echo '<td></td>';
 	}
@@ -131,9 +131,9 @@ function print_single_file($file, $isprinted)
 		{
 			//echo $isprinted;
 			if(fileisright($file->file_name) == PRINTABLE_FILE)
-				echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+				echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
 			elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
-				echo '<td></td>';
+				echo '<td class="ui-helper-center"></td>';
 		}
 	}
 }
