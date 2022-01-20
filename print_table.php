@@ -192,6 +192,9 @@ function create_right_index($array)
 function print_table($array){
 	echo '<table>'; ?>
 <style>
+
+thead, tbody, tr, td, th { display: block; }
+
 table {
 	border: 1px solid #ccc;
 	border-collapse: collapse;
@@ -206,23 +209,38 @@ table caption {
 	margin: .5em 0 .75em;
 }
 
-table tr {
-	background-color: black;
-	border: 1px solid #ddd;
-	padding: .35em;
-}
-
-table th,
 table td {
 	padding: .625em;
 	text-align: center;
 }
 
-table th {
-	font-size: .85em;
-	letter-spacing: .1em;
-	text-transform: uppercase;
+tr:after {
+    content: ' ';
+    display: block;
+    visibility: hidden;
+    clear: both;
 }
+
+thead th {
+    height: 50px;
+    /*text-align: left;*/
+}
+
+tbody {
+    height: 600px;
+    overflow-y: auto;
+}
+
+thead {
+    /* fallback */
+}
+
+
+tbody td, thead th {
+    width: 13.8%;
+    float: left;
+}
+
 
 @media screen and (max-width: 600px) {
 	table {
@@ -258,10 +276,11 @@ table th {
 	}
 
 	table td::before {
-	/*
-	* aria-label has no advantage, it won't be read inside a table
-	content: attr(aria-label);
+
+	/*aria-label has no advantage, 
+	**it won't be read inside a table
 	*/
+	content: attr(aria-label);
 	content: attr(data-label);
 	float: left;
 	font-weight: bold;
@@ -289,9 +308,9 @@ table th {
 <?php
 	foreach($array as $key => $value)
 	{
-		echo '<tr>';
 		if (folderisright($key) == 0)
 		{
+			echo '<tr>';
 			$isprinted = 0;
 			$folder_name = get_name($key);
 			echo '<td>'.$folder_name.'</td>';
@@ -304,8 +323,8 @@ table th {
 				else
 					print_single_file($file, $isprinted);
 			}
+			echo '</tr>';
 		}
-		echo '</tr>';
 	}
 	echo '</table>';
 ?>
@@ -335,7 +354,7 @@ function read_files($dir)
 			else
 			{
 				$ext = pathinfo($value, PATHINFO_EXTENSION);
-				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt")
+				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt" || $ext == "JPG")
 				{
 						$files[$i] = array($dir, $value);
 				}
