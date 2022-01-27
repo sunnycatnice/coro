@@ -7,7 +7,7 @@ define("FILE_PATH", 0);
 define("FILE_NAME", 1);
 define("PRINTABLE_FILE", 0);
 define("SKIPPABLE_FILE", -1);
-define("SITE_URL", "http://www.coralesantalessandro.com/wordpress/");
+define("SITE_URL", "http://www.coralesantalessandro.com/");
 
 //class structure to store datas from every file of the current directory
 class filedata

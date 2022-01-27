@@ -7,7 +7,7 @@ define("FILE_PATH", 0);
 define("FILE_NAME", 1);
 define("PRINTABLE_FILE", 0);
 define("SKIPPABLE_FILE", -1);
-define("SITE_URL", "http://www.coralesantalessandro.com/wordpress/");
+define("SITE_URL", "http://www.coralesantalessandro.com/");
 
 //class structure to store datas from every file of the current directory
 class filedata
@@ -92,7 +92,7 @@ function fileisright($file)
 
 function fixpath($str)
 {
-	$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/";
+	$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/";
 	return(str_replace($str2,"", $str));
 }
 
@@ -120,7 +120,10 @@ function print_single_file($file, $isprinted)
 	if ($isprinted == 0 || $isprinted == 1)
 	{
 		if(fileisright($file->file_name) == PRINTABLE_FILE)
+		{
 			echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+			//add to the previous td a class to center the text
+		}
 		elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 			echo '<td></td>';
 	}
@@ -142,7 +145,7 @@ function print_2_files($file, $value, $key)
 {
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
-		echo '<td><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>';
+		echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>'.' -';
 		echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
 		return $value[$key+1][FILE_NAME];
 	}
@@ -163,7 +166,7 @@ function get_first_4_element_length($key)
 	return $count;
 }
 
-//function to estrapolate the name of the file or the folder
+//function to get the name of the file or the folder
 function get_name($key)
 {
 	$name = "";
@@ -194,6 +197,13 @@ function print_table($array){
 <style>
 
 thead, tbody, tr, td, th { display: block; }
+
+/*
+.qt-the-content table td, .qt-the-content table th {
+	border: none !important;
+	text-align: right;
+}
+*/
 
 table {
 	border: 1px solid #ccc;
@@ -292,6 +302,7 @@ tbody td, thead th {
 	}
 }
 </style>
+<caption>Brani in audio e spartito</caption>
 <thead>
 	<tr>
 	<th scope="col">Titolo</th>
@@ -333,6 +344,163 @@ tbody td, thead th {
 <?php
 }
 
+#function create_right_index2($array) to create another html dynamic table
+#it takes as input the array returned by read_files
+#it prints the table with the name of the folder on the first column
+#end every other column with a link to the file
+function print_table_2($array)
+{
+	echo '<br>';
+	echo '<table>'; ?>
+	<style>
+	
+	thead, tbody, tr, td, th { display: block; }
+	
+	/*
+	.qt-the-content table td, .qt-the-content table th {
+		border: none !important;
+		text-align: right;
+	}
+	*/
+	
+	table {
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		table-layout: fixed;
+	}
+	
+	table caption {
+		font-size: 1.5em;
+		margin: .5em 0 .75em;
+	}
+	
+	table td {
+		padding: .625em;
+		text-align: center;
+	}
+	
+	tr:after {
+		content: ' ';
+		display: block;
+		visibility: hidden;
+		clear: both;
+	}
+	
+	thead th {
+		height: 50px;
+		/*text-align: left;*/
+	}
+	
+	tbody {
+		height: 600px;
+		overflow-y: auto;
+	}
+	
+	thead {
+		/* fallback */
+	}
+	
+	
+	tbody td, thead th {
+		width: 13.8%;
+		float: left;
+	}
+	
+	
+	@media screen and (max-width: 600px) {
+		table {
+		border: 0;
+		}
+	
+		table caption {
+		font-size: 1.3em;
+		}
+	
+		table thead {
+		border: none;
+		clip: rect(0 0 0 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+		}
+	
+		table tr {
+		border-bottom: 3px solid #ddd;
+		display: block;
+		margin-bottom: .625em;
+		}
+	
+		table td {
+		border-bottom: 1px solid #ddd;
+		display: block;
+		font-size: .8em;
+		text-align: right;
+		}
+	
+		table td::before {
+	
+		/*aria-label has no advantage, 
+		**it won't be read inside a table
+		*/
+		content: attr(aria-label);
+		content: attr(data-label);
+		float: left;
+		font-weight: bold;
+		text-transform: uppercase;
+		}
+	
+		table td:last-child {
+		border-bottom: 0;
+		}
+	}
+	</style>
+	<caption>LA RISURREZIONE di G. Zelioli</caption>
+	<thead>
+		<tr>
+		<th scope="col">Titolo</th>
+		<th scope="col">Soprani</th>
+		<th scope="col">Contralti</th>
+		<th scope="col">Tenori</th>
+		<th scope="col">Bassi</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+	<?php
+		foreach($array as $key => $value)
+		{
+			if (folderisright($key) == 0)
+			{
+				echo '<tr>';
+				$isprinted = 0;
+				$folder_name = get_name($key);
+				echo '<td>'.$folder_name.'</td>';
+				foreach($value as $key2 => $folder_and_file)
+				{
+					$file = new filedata();
+					init_filedata($file, $folder_and_file);
+					if (check_2_files($file->file_name, $key2, $value) == 0)
+						$isprinted = print_2_files($file, $value, $key2);
+					else
+						print_single_file($file, $isprinted);
+				}
+				echo '</tr>';
+			}
+		}
+		echo '</table>';
+	?>
+	</tr>
+	</tbody>
+	<?php
+
+}
+
 #php function that reads the files from the directory passed to it
 #it should be recursive, so it will return the files in subdirectories
 #it creates an array of arrays, where the first array is the directory, and the second is the file
@@ -364,9 +532,11 @@ function read_files($dir)
 	}
 	return $files;
 }
+
 #print the array of arrays returned by the function get_files
 //print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
-print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved")));
+print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
+print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
 //print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
