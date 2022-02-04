@@ -186,213 +186,14 @@ function create_right_index($array)
 	return $array;
 }
 
-#function to print in a table the output of the function read_files
-#the first array depth is the name of the folder
-#the second array depth is an array containing the path and the name of the file
-#print on the rows the name of the folder (first array depth)
-#print on the columns the name of the files (third array depth first index)
-#every file is clickable and will open the file in a new window
-function print_table($array){
-	echo '<table id="myTable">'; echo "<input type='text' id='myInput' onkeyup='myFunction()' placeholder='Search for names..' title='Type in a name'>" ?>
-<style>
-
-thead, tbody, tr, td, th { display: block; }
-
-/*
-.qt-the-content table td, .qt-the-content table th {
-	border: none !important;
-	text-align: right;
-}
-*/
-
-#myInput {
-  background-image: url('/data/vhosts/coralesantalessandro.com/httpdocs/reserved/utils/search.png'); /* Add a search icon to input */
-  background-position: 10px 12px; /* Position the search icon */
-  background-repeat: no-repeat; /* Do not repeat the icon image */
-  width: 100%; /* Full-width */
-  font-size: 16px; /* Increase font-size */
-  padding: 12px 20px 12px 40px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
-  margin-bottom: 12px; /* Add some space below the input */
-}
-
-#myInput2 {
-  background-image: url('/data/vhosts/coralesantalessandro.com/httpdocs/reserved/utils/search.png'); /* Add a search icon to input */
-  background-position: 10px 12px; /* Position the search icon */
-  background-repeat: no-repeat; /* Do not repeat the icon image */
-  width: 100%; /* Full-width */
-  font-size: 16px; /* Increase font-size */
-  padding: 12px 20px 12px 40px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
-  margin-bottom: 12px; /* Add some space below the input */
-}
-
-table {
-	border: 1px solid #ccc;
-	border-collapse: collapse;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	table-layout: fixed;
-}
-
-table caption {
-	font-size: 1.5em;
-	margin: .5em 0 .75em;
-}
-
-table td {
-	padding: .625em;
-	text-align: center;
-}
-
-tr:after {
-    content: ' ';
-    display: block;
-    visibility: hidden;
-    clear: both;
-}
-
-thead th {
-    height: 50px;
-    /*text-align: left;*/
-}
-
-tbody {
-    height: 600px;
-    overflow-y: auto;
-}
-
-thead {
-    /* fallback */
-}
-
-
-tbody td, thead th {
-    width: 13.8%;
-    float: left;
-}
-
-
-@media screen and (max-width: 600px) {
-	table {
-	border: 0;
-	}
-
-	table caption {
-	font-size: 1.3em;
-	}
-
-	table thead {
-	border: none;
-	clip: rect(0 0 0 0);
-	height: 1px;
-	margin: -1px;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
-	width: 1px;
-	}
-
-	table tr {
-	border-bottom: 3px solid #ddd;
-	display: block;
-	margin-bottom: .625em;
-	}
-
-	table td {
-	border-bottom: 1px solid #ddd;
-	display: block;
-	font-size: .8em;
-	text-align: right;
-	}
-
-	table td::before {
-
-	/*aria-label has no advantage, 
-	**it won't be read inside a table
-	*/
-	content: attr(aria-label);
-	content: attr(data-label);
-	float: left;
-	font-weight: bold;
-	text-transform: uppercase;
-	}
-
-	table td:last-child {
-	border-bottom: 0;
-	}
-}
-</style>
-<caption>Brani in audio e spartito</caption>
-<thead>
-	<tr>
-	<th scope="col">Titolo</th>
-	<th scope="col">Soprani</th>
-	<th scope="col">Contralti</th>
-	<th scope="col">Tenori</th>
-	<th scope="col">Bassi</th>
-	<th scope="col">Spartito</th>
-	<th scope="col">Ascolta</th>
-	</tr>
-</thead>
-<tbody>
-	<tr>
-<?php
-	foreach($array as $key => $value)
-	{
-		if (folderisright($key) == 0)
-		{
-			echo '<tr>';
-			$isprinted = 0;
-			$folder_name = get_name($key);
-			echo '<td>'.$folder_name.'</td>';
-			foreach($value as $key2 => $folder_and_file)
-			{
-				$file = new filedata();
-				init_filedata($file, $folder_and_file);
-				if (check_2_files($file->file_name, $key2, $value) == 0)
-					$isprinted = print_2_files($file, $value, $key2);
-				else
-					print_single_file($file, $isprinted);
-			}
-			echo '</tr>';
-		}
-	}
-	echo '</table>'; echo "<script>
-	function myFunction() {
-	  var input, filter, table, tr, td, i, txtValue;
-	  input = document.getElementById('myInput');
-	  filter = input.value.toUpperCase();
-	  table = document.getElementById('myTable');
-	  tr = table.getElementsByTagName('tr');
-	  for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName('td')[0];
-		if (td) {
-		  txtValue = td.textContent || td.innerText;
-		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-			tr[i].style.display = '';
-		  } else {
-			tr[i].style.display = 'none';
-		  }
-		}       
-	  }
-	}
-	</script>"
-?>
-</tr>
-</tbody>
-<?php
-}
-
 #function create_right_index2($array) to create another html dynamic table
 #it takes as input the array returned by read_files
 #it prints the table with the name of the folder on the first column
 #end every other column with a link to the file
-function print_table_2($array)
+function print_table_sunday($array)
 {
 	echo '<br>';
-	echo '<table id="myTable2">'; echo "<input type='text' id='myInput2' onkeyup='myFunction()' placeholder='Search for names..' title='Type in a name'>"?>
+	echo '<table>'; ?>
 	<style>
 	
 	thead, tbody, tr, td, th { display: block; }
@@ -446,11 +247,11 @@ function print_table_2($array)
 	
 	
 	tbody td, thead th {
-		width: 13.8%;
+		width: 35.5%;
 		float: left;
 	}
 	
-	
+
 	@media screen and (max-width: 600px) {
 		table {
 		border: 0;
@@ -501,14 +302,11 @@ function print_table_2($array)
 		}
 	}
 	</style>
-	<caption>LA RISURREZIONE di G. Zelioli</caption>
+	<caption>Lista di brani per la domenica</caption>
 	<thead>
 		<tr>
 		<th scope="col">Titolo</th>
-		<th scope="col">Soprani</th>
-		<th scope="col">Contralti</th>
-		<th scope="col">Tenori</th>
-		<th scope="col">Bassi</th>
+		<th scope="col">Ascolta</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -534,26 +332,7 @@ function print_table_2($array)
 				echo '</tr>';
 			}
 		}
-		echo '</table>'; echo "<script>
-		function myFunction() {
-		  var input, filter, table, tr, td, i, txtValue;
-		  input = document.getElementById('myInput2');
-		  filter = input.value.toUpperCase();
-		  table = document.getElementById('myTable2');
-		  tr = table.getElementsByTagName('tr');
-		  for (i = 0; i < tr.length; i++) {
-			td = tr[i].getElementsByTagName('td')[0];
-			if (td) {
-			  txtValue = td.textContent || td.innerText;
-			  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-				tr[i].style.display = '';
-			  } else {
-				tr[i].style.display = 'none';
-			  }
-			}       
-		  }
-		}
-		</script>"
+		echo '</table>';
 	?>
 	</tr>
 	</tbody>
@@ -593,10 +372,4 @@ function read_files($dir)
 	return $files;
 }
 
-#print the array of arrays returned by the function get_files
-//print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
-//$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
-//print_r($right_indexed);
-print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
-print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
-//print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
+print_table_sunday(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/tablesunday")));
