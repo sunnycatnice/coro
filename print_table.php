@@ -193,7 +193,6 @@ function create_right_index($array)
 #print on the columns the name of the files (third array depth first index)
 #every file is clickable and will open the file in a new window
 function print_table($array){
-	echo '<br>';
 	echo '<table id="myTable1">'; 
 	echo "<input type='text' id='myInput1' onkeyup='myFunction(1)' placeholder=' Cerca un brano..' title='Type in a name'>";?>	
 <style>
