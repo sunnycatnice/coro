@@ -193,7 +193,9 @@ function create_right_index($array)
 #print on the columns the name of the files (third array depth first index)
 #every file is clickable and will open the file in a new window
 function print_table($array){
-	echo '<table id="myTable">'; echo "<input type='text' id='myInput' onkeyup='myFunction()' placeholder='Search for names..' title='Type in a name'>" ?>
+	echo '<br>';
+	echo '<table id="myTable1">'; 
+	echo "<input type='text' id='myInput1' onkeyup='myFunction(1)' placeholder=' Cerca un brano..' title='Type in a name'>";?>	
 <style>
 
 thead, tbody, tr, td, th { display: block; }
@@ -205,19 +207,8 @@ thead, tbody, tr, td, th { display: block; }
 }
 */
 
-#myInput {
-  background-image: url('/data/vhosts/coralesantalessandro.com/httpdocs/reserved/utils/search.png'); /* Add a search icon to input */
-  background-position: 10px 12px; /* Position the search icon */
-  background-repeat: no-repeat; /* Do not repeat the icon image */
-  width: 100%; /* Full-width */
-  font-size: 16px; /* Increase font-size */
-  padding: 12px 20px 12px 40px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
-  margin-bottom: 12px; /* Add some space below the input */
-}
-
-#myInput2 {
-  background-image: url('/data/vhosts/coralesantalessandro.com/httpdocs/reserved/utils/search.png'); /* Add a search icon to input */
+#myInput1 {
+  background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
   background-position: 10px 12px; /* Position the search icon */
   background-repeat: no-repeat; /* Do not repeat the icon image */
   width: 100%; /* Full-width */
@@ -247,30 +238,30 @@ table td {
 }
 
 tr:after {
-    content: ' ';
-    display: block;
-    visibility: hidden;
-    clear: both;
+	content: ' ';
+	display: block;
+	visibility: hidden;
+	clear: both;
 }
 
 thead th {
-    height: 50px;
-    /*text-align: left;*/
+	height: 50px;
+	/*text-align: left;*/
 }
 
 tbody {
-    height: 600px;
-    overflow-y: auto;
+	height: 600px;
+	overflow-y: auto;
 }
 
 thead {
-    /* fallback */
+	/* fallback */
 }
 
 
 tbody td, thead th {
-    width: 13.8%;
-    float: left;
+	width: 13.8%;
+	float: left;
 }
 
 
@@ -359,26 +350,7 @@ tbody td, thead th {
 			echo '</tr>';
 		}
 	}
-	echo '</table>'; echo "<script>
-	function myFunction() {
-	  var input, filter, table, tr, td, i, txtValue;
-	  input = document.getElementById('myInput');
-	  filter = input.value.toUpperCase();
-	  table = document.getElementById('myTable');
-	  tr = table.getElementsByTagName('tr');
-	  for (i = 0; i < tr.length; i++) {
-		td = tr[i].getElementsByTagName('td')[0];
-		if (td) {
-		  txtValue = td.textContent || td.innerText;
-		  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-			tr[i].style.display = '';
-		  } else {
-			tr[i].style.display = 'none';
-		  }
-		}       
-	  }
-	}
-	</script>"
+	echo '</table>';
 ?>
 </tr>
 </tbody>
@@ -392,7 +364,8 @@ tbody td, thead th {
 function print_table_2($array)
 {
 	echo '<br>';
-	echo '<table id="myTable2">'; echo "<input type='text' id='myInput2' onkeyup='myFunction()' placeholder='Search for names..' title='Type in a name'>"?>
+	echo '<table id="myTable2">'; 
+	echo "<input type='text' id='myInput2' onkeyup='myFunction(2)' placeholder=' Cerca un brano..' title='Type in a name'>"; ?>
 	<style>
 	
 	thead, tbody, tr, td, th { display: block; }
@@ -403,6 +376,17 @@ function print_table_2($array)
 		text-align: right;
 	}
 	*/
+
+	#myInput2 {
+	background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
+	background-position: 10px 12px; /* Position the search icon */
+	background-repeat: no-repeat; /* Do not repeat the icon image */
+	width: 100%; /* Full-width */
+	font-size: 16px; /* Increase font-size */
+	padding: 12px 20px 12px 40px; /* Add some padding */
+	border: 1px solid #ddd; /* Add a grey border */
+	margin-bottom: 12px; /* Add some space below the input */
+  	} 
 	
 	table {
 		border: 1px solid #ccc;
@@ -534,12 +518,14 @@ function print_table_2($array)
 				echo '</tr>';
 			}
 		}
-		echo '</table>'; echo "<script>
-		function myFunction() {
+		echo '</table>'; 
+		
+		echo "<script type = 'text/javascript'>
+		function myFunction(id) {
 		  var input, filter, table, tr, td, i, txtValue;
-		  input = document.getElementById('myInput2');
+		  input = document.getElementById('myInput'+id);
 		  filter = input.value.toUpperCase();
-		  table = document.getElementById('myTable2');
+		  table = document.getElementById('myTable'+id);
 		  tr = table.getElementsByTagName('tr');
 		  for (i = 0; i < tr.length; i++) {
 			td = tr[i].getElementsByTagName('td')[0];
@@ -553,7 +539,7 @@ function print_table_2($array)
 			}       
 		  }
 		}
-		</script>"
+		</script>";
 	?>
 	</tr>
 	</tbody>
