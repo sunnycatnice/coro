@@ -194,7 +194,7 @@ function create_right_index($array)
 #every file is clickable and will open the file in a new window
 function print_table($array){
 	echo '<table id="myTable1">'; 
-	echo "<input type='text' id='myInput1' onkeyup='myFunction(1)' placeholder=' Cerca un brano..' title='Type in a name'>";?>	
+	echo "<input type='text' id='myInput1' onkeyup='myFunction(1)' placeholder=' Cerca un brano...' title='Type in a name'>";?>	
 <style>
 
 thead, tbody, tr, td, th { display: block; }
@@ -208,7 +208,7 @@ thead, tbody, tr, td, th { display: block; }
 
 #myInput1 {
   background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
-  background-position: 10px 12px; /* Position the search icon */
+  background-position: 10px 15px; /* Position the search icon */
   background-repeat: no-repeat; /* Do not repeat the icon image */
   width: 100%; /* Full-width */
   font-size: 16px; /* Increase font-size */
@@ -364,7 +364,7 @@ function print_table_2($array)
 {
 	echo '<br>';
 	echo '<table id="myTable2">'; 
-	echo "<input type='text' id='myInput2' onkeyup='myFunction(2)' placeholder=' Cerca un brano..' title='Type in a name'>"; ?>
+	echo "<input type='text' id='myInput2' onkeyup='myFunction(2)' placeholder=' Cerca un brano...' title='Type in a name'>"; ?>
 	<style>
 	
 	thead, tbody, tr, td, th { display: block; }
@@ -378,7 +378,7 @@ function print_table_2($array)
 
 	#myInput2 {
 	background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
-	background-position: 10px 12px; /* Position the search icon */
+	background-position: 10px 15px; /* Position the search icon */
 	background-repeat: no-repeat; /* Do not repeat the icon image */
 	width: 100%; /* Full-width */
 	font-size: 16px; /* Increase font-size */
