@@ -10,8 +10,6 @@ url(data:/data/vhosts/coralesantalessandro.com/httpdocs/reserved/utils/);
   margin-bottom: 12px; /* Add some space below the input */
 }
 
-
-
 #myInput2 {
     background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
     background-position: 10px 12px; /* Position the search icon */
@@ -39,4 +37,9 @@ input#myInput:focus {
   text-indent:0px
 }
 
-class='myInput'
+if (preg_match("/watch/", $file->file_name))
+{
+  $youtube_link = "http://www.youtube.com/watch?v=";
+  $youtube_link = $youtube_link . substr($file->file_name, 0, 11);
+  echo "<tr><td><a href=\"" . $youtube_link . "\">" . $file->file_name . "</a></td>";
+}

@@ -115,14 +115,28 @@ function check_2_files($file_name, $key, $file_array)
 		return 1;
 }
 
+function check_youtube_video($file)
+{
+	if (preg_match("/watch/", $file->file_name))
+	{
+		$youtube_link = "http://www.youtube.com/";
+		$youtube_link = $youtube_link . substr($file->file_name, 2, -4);
+		echo '<td><a href=' . $youtube_link . ">" . $file->file_name.'" target="_blank"></td>';
+		return 1;
+	}
+	return 0;
+}
+
 function print_single_file($file, $isprinted)
 {
 	if ($isprinted == 0 || $isprinted == 1)
 	{
 		if(fileisright($file->file_name) == PRINTABLE_FILE)
 		{
-			echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
-			//add to the previous td a class to center the text
+			if (check_youtube_video($file) == 0)
+			{
+				echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+			}
 		}
 		elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 			echo '<td></td>';
@@ -132,11 +146,13 @@ function print_single_file($file, $isprinted)
 		//if the filename of the current file is equal to the filename of $isprinted, then do not print the file
 		if ($file->file_name != $isprinted)
 		{
-			//echo $isprinted;
-			if(fileisright($file->file_name) == PRINTABLE_FILE)
-				echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
-			elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
-				echo '<td class="ui-helper-center"></td>';
+			if (check_youtube_video($file) == 0)
+			{
+				if(fileisright($file->file_name) == PRINTABLE_FILE)
+					echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+				elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
+					echo '<td class="ui-helper-center"></td>';
+			}
 		}
 	}
 }
@@ -145,8 +161,11 @@ function print_2_files($file, $value, $key)
 {
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
-		echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>'.' -';
-		echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+		if (check_youtube_video($value[$key][FILE_NAME]) == 0 || check_youtube_video($value[$key+1][FILE_NAME]) == 0)
+		{
+			echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>'.' -';
+			echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+		}
 		return $value[$key+1][FILE_NAME];
 	}
 	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
