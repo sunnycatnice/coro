@@ -161,6 +161,7 @@ function print_2_files($file, $value, $key)
 {
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
+		//to see why this is not working, it does not print the yt video
 		if (check_youtube_video($value[$key][FILE_NAME]) == 0 || check_youtube_video($value[$key+1][FILE_NAME]) == 0)
 		{
 			echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>'.' -';
