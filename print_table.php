@@ -129,7 +129,7 @@ function check_single_video($filename)
 		$youtube_link = "http://www.youtube.com/";
 		$youtube_link = $youtube_link . substr($filename, 2, -4);
 		//put an html title to that video
-		$youtube_link = $youtube_link . "?title=1";
+		$youtube_link = $youtube_link;
 		//using this solution up to put it there is the file up/down the video with function check_if_other_files_for_ytvideo
 		echo '<td><a href=' . $youtube_link . ">" . $filename.'" target="_blank"></td>';
 		return 1;
@@ -140,7 +140,6 @@ function check_single_video($filename)
 function print_yt_status2($value, $key, $youtube_link)
 {
 	echo '<td><a href=' . $youtube_link . ">" . $value[$key + 1][FILE_NAME].'" target="_blank">'.'</a>'.' -';
-	echo "entra";
 	echo '<br> <a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a></td>';
 }
 
@@ -156,25 +155,34 @@ function generate_yt_link($value, $key)
 	$youtube_link = $youtube_link . substr($value[$key][FILE_NAME], 2, -4);
 	//BISOGNA FARE EVENTUALMENTE 2 CAZZO DI LINK DIVERSI SE NO NON FUNZIONA. MADONNA.
 	//FINITO QUESTO BASTA.
-	$youtube_link = $youtube_link . "?title=1";
+	$youtube_link = $youtube_link;
 	return $youtube_link;
 }
 
 //the status variable is used to check if it's nessessary to print the td tag
 function print_youtube_video($value, $key, $status)
 {
-	$youtube_link = generate_yt_link($value, $key);
+	$yt_link1 = 0;
+	$yt_link2 = 0;
 	//using this solution up to put it there is the file up/down the video with function check_if_other_files_for_ytvideo
 	//finire questa maledetta funzione, per dindirindina
 	if ($status == 4)
 	{
-		echo '<td><a href=' . $youtube_link . ">" . $value[$key][FILE_NAME] .'" target="_blank">'.'</a>'.' -';
-		echo '<br> <a href=' . $youtube_link . ">" . $value[$key + 1][FILE_NAME].'" target="_blank"></td>';
+		$yt_link1 = generate_yt_link($value, $key);
+		$yt_link2 = generate_yt_link($value, $key + 1);
+		echo '<td><a href=' . $yt_link1 . ">" . $value[$key][FILE_NAME] .'" target="_blank">'.'</a>'.' -';
+		echo '<br> <a href=' . $yt_link2 . ">" . $value[$key + 1][FILE_NAME].'" target="_blank"></td>';
 	}
 	if ($status == 3)
-		print_yt_status3($value, $key, $youtube_link);
+	{
+		$yt_link1 = generate_yt_link($value, $key);
+		print_yt_status3($value, $key, $$yt_link1);
+	}
 	if ($status == 2)
-		print_yt_status2($value, $key, $youtube_link);
+	{
+		$yt_link2 = generate_yt_link($value, $key + 1);
+		print_yt_status2($value, $key, $yt_link2);
+	}
 	if ($status == 1)
 	{
 		echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>'.' -';
