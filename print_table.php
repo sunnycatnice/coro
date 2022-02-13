@@ -218,10 +218,6 @@ function check_if_other_files_for_ytvideo($value, $key)
 function make_youtube_videos($value, $key)
 {
 	$n_ytvideo = check_if_other_files_for_ytvideo($value, $key);
-	echo $value[$key][FILE_NAME];
-	echo ": ";
-	echo $n_ytvideo;
-	echo "\n";
 	if ($n_ytvideo == 4)
 		print_youtube_video($value, $key, $n_ytvideo);
 	if ($n_ytvideo == 3)
