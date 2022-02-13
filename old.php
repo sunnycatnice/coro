@@ -96,19 +96,12 @@ function fixpath($str)
 	return(str_replace($str2,"", $str));
 }
 
-function check_youtube_video($filename)
-{
-	if (preg_match("/watch/", $filename))
-		return 1;
-	return 0;
-}
-
 //function check_2_files($file_name, $file_number, $key, $file_array)
 //if the current file number is equal to the next one, it means that the file is a duplicate, then the function returns 0
 //if the current file number is not equal to the next one, it means that the file is not a duplicate, then the function returns 1
-function check_2_files($file_array, $key)
+function check_2_files($file_name, $key, $file_array)
 {
-	$file_number = get_file_number($file_array[$key][FILE_NAME]);
+	$file_number = get_file_number($file_name);
 	$next_file_number = get_file_number($file_array[$key + 1][FILE_NAME]);
 	//execute the if only if $key is even
 	if ($key % 2 == 0)
@@ -122,127 +115,38 @@ function check_2_files($file_array, $key)
 		return 1;
 }
 
-function check_single_video($filename)
+function check_youtube_video($file)
 {
-	if (preg_match("/watch/", $filename))
+	if (preg_match("/watch/", $file->file_name))
 	{
 		$youtube_link = "http://www.youtube.com/";
-		$youtube_link = $youtube_link . substr($filename, 2, -4);
-		//put an html title to that video
-		$youtube_link = $youtube_link . "?title=1";
-		//using this solution up to put it there is the file up/down the video with function check_if_other_files_for_ytvideo
-		echo '<td><a href=' . $youtube_link . ">" . $filename.'" target="_blank"></td>';
+		$youtube_link = $youtube_link . substr($file->file_name, 2, -4);
+		echo '<td><a href=' . $youtube_link . ">" . $file->file_name.'" target="_blank"></td>';
 		return 1;
 	}
 	return 0;
 }
 
-function print_yt_status2($value, $key, $youtube_link)
-{
-	echo '<td><a href=' . $youtube_link . ">" . $value[$key + 1][FILE_NAME].'" target="_blank">'.'</a>'.' -';
-	echo "entra";
-	echo '<br> <a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a></td>';
-}
-
-function print_yt_status3($value, $key, $youtube_link)
-{
-	echo '<td><a href=' . $youtube_link . ">" . $value[$key][FILE_NAME].'" target="_blank">'.'</a>'.' -';
-	echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
-}
-
-function generate_yt_link($value, $key)
-{
-	$youtube_link = "http://www.youtube.com/";
-	$youtube_link = $youtube_link . substr($value[$key][FILE_NAME], 2, -4);
-	//BISOGNA FARE EVENTUALMENTE 2 CAZZO DI LINK DIVERSI SE NO NON FUNZIONA. MADONNA.
-	//FINITO QUESTO BASTA.
-	$youtube_link = $youtube_link . "?title=1";
-	return $youtube_link;
-}
-
-//the status variable is used to check if it's nessessary to print the td tag
-function print_youtube_video($value, $key, $status)
-{
-	$youtube_link = generate_yt_link($value, $key);
-	//using this solution up to put it there is the file up/down the video with function check_if_other_files_for_ytvideo
-	//finire questa maledetta funzione, per dindirindina
-	if ($status == 4)
-	{
-		echo '<td><a href=' . $youtube_link . ">" . $value[$key][FILE_NAME] .'" target="_blank">'.'</a>'.' -';
-		echo '<br> <a href=' . $youtube_link . ">" . $value[$key + 1][FILE_NAME].'" target="_blank"></td>';
-	}
-	if ($status == 3)
-		print_yt_status3($value, $key, $youtube_link);
-	if ($status == 2)
-		print_yt_status2($value, $key, $youtube_link);
-	if ($status == 1)
-	{
-		echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>'.' -';
-		echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
-	}
-}
-
-//it returns 4 if both of the files ARE yt videos
-//it returns 3 if the first file is a yt video and the second is NOT
-//it returns 2 if the first file is NOT a yt video and the second is
-//it returns 1 if both of the files ARE NOT yt videos
-function check_if_other_files_for_ytvideo($value, $key)
-{
-	if (check_youtube_video($value[$key][FILE_NAME]) == 1)
-	{
-		if (check_youtube_video($value[$key + 1][FILE_NAME]) == 1)
-			return 4;
-		else
-			return 3;
-	}
-	elseif (check_youtube_video($value[$key+1][FILE_NAME]) == 1)
-	{
-		if (check_youtube_video($value[$key][FILE_NAME]) == 0)
-			return 2;
-	}
-	elseif (check_youtube_video($value[$key][FILE_NAME]) == 0)
-	{
-		if (check_youtube_video($value[$key + 1][FILE_NAME]) == 0)
-			return 1;
-	}
-}
-
-function make_youtube_videos($value, $key)
-{
-	$n_ytvideo = check_if_other_files_for_ytvideo($value, $key);
-	echo $value[$key][FILE_NAME];
-	echo ": ";
-	echo $n_ytvideo;
-	echo "\n";
-	if ($n_ytvideo == 4)
-		print_youtube_video($value, $key, $n_ytvideo);
-	if ($n_ytvideo == 3)
-		print_youtube_video($value, $key, $n_ytvideo);
-	if ($n_ytvideo == 2)
-		print_youtube_video($value, $key, $n_ytvideo);
-	if ($n_ytvideo == 1)
-		print_youtube_video($value, $key, $n_ytvideo);
-}
-
-function print_single_file($value, $key, $file, $isprinted)
+function print_single_file($file, $isprinted)
 {
 	if ($isprinted == 0 || $isprinted == 1)
 	{
 		if(fileisright($file->file_name) == PRINTABLE_FILE)
 		{
-			if (check_single_video($file->file_name) == 0 && $found == 0)
+			if (check_youtube_video($file) == 0)
+			{
 				echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+			}
 		}
 		elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
 			echo '<td></td>';
 	}
 	else
 	{
-		//non entra qua quando casi 2 e 3 per yt video.
 		//if the filename of the current file is equal to the filename of $isprinted, then do not print the file
 		if ($file->file_name != $isprinted)
 		{
-			if (check_single_video($file->file_name) == 0)
+			if (check_youtube_video($file) == 0)
 			{
 				if(fileisright($file->file_name) == PRINTABLE_FILE)
 					echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
@@ -255,9 +159,14 @@ function print_single_file($value, $key, $file, $isprinted)
 
 function print_2_files($file, $value, $key)
 {
-	if(fileisright($file->file_name) == PRINTABLE_FILE || fileisright($value[$key + 1][FILE_NAME]) == PRINTABLE_FILE)
+	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
-		make_youtube_videos($value, $key);
+		//to see why this is not working, it does not print the yt video
+		if (check_youtube_video($value[$key][FILE_NAME]) == 0 || check_youtube_video($value[$key+1][FILE_NAME]) == 0)
+		{
+			echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>'.' -';
+			echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
+		}
 		return $value[$key+1][FILE_NAME];
 	}
 	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
@@ -452,10 +361,10 @@ tbody td, thead th {
 			{
 				$file = new filedata();
 				init_filedata($file, $folder_and_file);
-				if (check_2_files($value, $key2) == 0)
+				if (check_2_files($file->file_name, $key2, $value) == 0)
 					$isprinted = print_2_files($file, $value, $key2);
 				else
-					print_single_file($value, $key2, $file, $isprinted);
+					print_single_file($file, $isprinted);
 			}
 			echo '</tr>';
 		}
@@ -620,10 +529,10 @@ function print_table_2($array)
 				{
 					$file = new filedata();
 					init_filedata($file, $folder_and_file);
-					if (check_2_files($value, $key2) == 0)
+					if (check_2_files($file->file_name, $key2, $value) == 0)
 						$isprinted = print_2_files($file, $value, $key2);
 					else
-						print_single_file($value, $key2, $file, $isprinted);
+						print_single_file($file, $isprinted);
 				}
 				echo '</tr>';
 			}
