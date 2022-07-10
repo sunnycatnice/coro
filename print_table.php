@@ -1,6 +1,6 @@
 <?php
 
-//header('Content-Type:text/plain');
+// header('Content-Type:text/plain');
 
 //constants to define better what is called what
 define("FILE_PATH", 0);
@@ -149,10 +149,10 @@ function print_yt_status3($value, $key, $youtube_link)
 	echo '<br> <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
 }
 
-function generate_yt_link($value, $key)
+function generate_yt_link($filename)
 {
 	$youtube_link = "http://www.youtube.com/";
-	$youtube_link = $youtube_link . substr($value[$key][FILE_NAME], 2, -4);
+	$youtube_link = $youtube_link . substr($filename, 2, -4);
 	//BISOGNA FARE EVENTUALMENTE 2 CAZZO DI LINK DIVERSI SE NO NON FUNZIONA. MADONNA.
 	//FINITO QUESTO BASTA.
 	$youtube_link = $youtube_link;
@@ -356,15 +356,17 @@ function print_x_files_in_column($array, $column, $n_of_times)
 		if($column == $current_col_num)
 		{
 			// echo "[ " . $value[FILE_NAME]."] ";
+			// echo check_youtube_video($file->file_name);
 			if (check_prev_number($value[FILE_NAME], $current_col_num) == 1
-			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
+			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE
+			|| check_youtube_video($value[$key][FILE_NAME]) == 1)
 			{
 				if ($i == 0)
 					echo '<td class="ui-helper-center">';
-				if (check_youtube_video($value[$key][FILE_NAME]) == 1)
+				if (check_youtube_video($file->file_name) == 1)
 				{
-					$yt_link = generate_yt_link($value, $key);
-					echo '<td><a href=' . $yt_link . ">" . $value[$key][FILE_NAME] .'" target="_blank">'.'</a>'.' -';
+					$yt_link = generate_yt_link($file->file_name);
+					echo '<a href=' . $yt_link . ">" . $file->file_name .'</a>'.' -';
 				}
 				else
 					echo '<a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a> - <br>';
@@ -536,8 +538,8 @@ tbody td, thead th {
 			foreach($value as $key2 => $folder_and_file)
 			{
 				$num_of_files = count_right_files_in_column($value, $i);
-				echo "n_of_files:$num_of_files ";
-				echo "i:$i ";
+				// echo "n_of_files:$num_of_files ";
+				// echo "i:$i ";
 				// if ($num_of_files >= 3)
 					print_x_files_in_column($value, $i, $num_of_files);
 				// else
@@ -800,6 +802,7 @@ function read_files($dir)
 //print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
+// print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
 print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
 //print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
 //print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
