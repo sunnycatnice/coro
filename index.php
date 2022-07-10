@@ -1,6 +1,6 @@
 <?php
 
-header('Content-Type:text/plain');
+//header('Content-Type:text/plain');
 
 //constants to define better what is called what
 define("FILE_PATH", 0);
@@ -135,7 +135,6 @@ function print_single_file($file)
 function print_2_files($file, $value, $key)
 {
 	$number_printed_same_clmn  = get_file_number($file->file_name);
-	echo "entro";
 	echo $number_printed_same_clmn;
 	if(fileisright($file->file_name) == PRINTABLE_FILE)
 	{
@@ -176,6 +175,37 @@ function create_right_index($array)
 	//sort the multi-dimensional array by the first numbers appearing in the folder name
 	array_multisort(array_map('get_file_number', array_keys($array)), SORT_ASC, $array);
 	return $array;
+}
+
+//function to count the right number of files in the folder
+function count_right_files($array)
+{
+	$count = 0;
+	foreach ($array as $key => $value)
+	{
+		if (fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
+			$count++;
+	}
+	return $count;
+}
+
+//function to print x files in a row
+function print_x_files($array, $x)
+{
+	$i = 0;
+	foreach ($array as $key => $value)
+	{
+		if (fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
+		{
+			print_single_file($value);
+			$i++;
+			if ($i == $x)
+			{
+				echo "</tr><tr>";
+				$i = 0;
+			}
+		}
+	}
 }
 
 #function to print in a table the output of the function read_files
@@ -298,6 +328,9 @@ table th {
 				init_filedata($file, $folder_and_file);
 				//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
 				//then use the function print_2_files
+				//call to function print_x_files
+				//print_x_files($value, count_right_files($value));
+				//echo $folder_and_file;
 				if ($found == 0)
 				{
 					if (check_2_files($file->file_name, $value) == 0)
@@ -351,8 +384,8 @@ function read_files($dir)
 	return $files;
 }
 #print the array of arrays returned by the function get_files
-print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
+//print_r(read_files("/Users/daniele/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
-//print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/reserved")));
+print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
 //print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
