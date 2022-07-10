@@ -366,12 +366,14 @@ function print_x_files_in_column($array, $column, $n_of_times)
 				if (check_youtube_video($file->file_name) == 1)
 				{
 					$yt_link = generate_yt_link($file->file_name);
-					echo '<a href=' . $yt_link . ">" . $file->file_name .'</a>'.' -';
+					echo '<a href=' . $yt_link . ">" . "VIDEO" . '</a>';
 				}
 				else
-					echo '<a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a> - <br>';
+					echo '<a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a>';
 				if ($i == $n_of_times - 1)
 					echo '</td>';
+				else
+					echo '- <br>';
 				$i++;
 				// echo "i:$i      ";
 				$current_col_num = get_file_number($value[FILE_NAME]);
@@ -802,7 +804,7 @@ function read_files($dir)
 //print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
-// print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
-print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
-//print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
+print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
+// print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
+// print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
 //print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
