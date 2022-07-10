@@ -311,19 +311,17 @@ function check_prev_number($filename, $prev_number)
 }
 
 //function to count the right files in a column
-//it returns an array with the number of files in the current column
-//on position 0 is the current column number (1,2,3...)
-//on position 1 is the number of files in the current column ($count)
-function count_right_files_in_column($array)
+//given the array of files in a folder and the column to analize...
+//it returns the number of files in the current column ($count)
+function count_right_files_in_column($array, $column)
 {
 	$count = 0;
-	$i = 0;
 	foreach ($array as $key => $value)
 	{
-		// echo "[ " . $value[FILE_NAME]."] ";
-		if ($i == 0)
-			$current_col_num = get_file_number($value[FILE_NAME]);
-		else
+		echo "[ " . $value[FILE_NAME]."] ";
+		$current_col_num = get_file_number($value[FILE_NAME]);
+
+		if($column == $current_col_num)
 		{
 			if (check_prev_number($value[FILE_NAME], $current_col_num) == 1
 			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
@@ -334,15 +332,13 @@ function count_right_files_in_column($array)
 			else
 				break;
 		}
-		// echo "count:$count      ";
-		// echo "current_col_num:$current_col_num      ";
+		echo "count:$count      ";
+		echo "current_col_num:$current_col_num      ";
 		$i++;
 	}
-	//create an array in which the first element is current_col_num and the second element is count
-	$array_to_return = array();
-	$array_to_return[0] = $current_col_num;
-	$array_to_return[1] = $count;
-	return $array_to_return;
+	echo "FINE COUNT_RIGHT_FILES_IN_COLUMN\n";
+	echo "count:$count      ";
+	return $count;
 }
 
 //function to print x files in a row
@@ -515,7 +511,7 @@ tbody td, thead th {
 			$isprinted = 0;
 			$folder_name = get_name($key);
 			echo '<td>'.$folder_name.'</td>';
-			echo count_right_files($value);
+			echo count_right_files_in_column($value, 2);
 			foreach($value as $key2 => $folder_and_file)
 			{
 				$file = new filedata();
