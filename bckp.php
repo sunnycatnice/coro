@@ -1,6 +1,6 @@
 <?php
 
-//header('Content-Type:text/plain');
+header('Content-Type:text/plain');
 
 //constants to define better what is called what
 define("FILE_PATH", 0);
@@ -301,85 +301,6 @@ function create_right_index($array)
 	return $array;
 }
 
-function check_prev_number($filename, $prev_number)
-{
-	$number = get_file_number($filename);
-	if ($number == $prev_number)
-		return 1;
-	else
-		return 0;
-}
-
-//function to count the right files in a column
-//given the array of files in a folder and the column to analize...
-//it returns the number of files in the current column ($count)
-function count_right_files_in_column($array, $column)
-{
-	$count = 0;
-	foreach ($array as $key => $value)
-	{
-		// echo "[ " . $value[FILE_NAME]."] ";
-		$current_col_num = get_file_number($value[FILE_NAME]);
-
-		if($column == $current_col_num)
-		{
-			if (check_prev_number($value[FILE_NAME], $current_col_num) == 1
-			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
-			{
-				$count++;
-				$current_col_num = get_file_number($value[FILE_NAME]);
-			}
-			else
-				break;
-		}
-		// echo "count:$count      ";
-		// echo "current_col_num:$current_col_num      ";
-	}
-	// echo "FINE COUNT_RIGHT_FILES_IN_COLUMN\n";
-	// echo "count:$count      ";
-	return $count;
-}
-
-//function to print $n_of_times files in a column
-//given the array of files in a folder and the column to analize...
-//it prints using the function print_single_file the $n_of_times files in the current column
-function print_x_files_in_column($array, $column, $n_of_times)
-{
-	$i = 0;
-	// echo $n_of_times;
-	foreach($array as $key => $value)
-	{
-		$file = new filedata();
-		init_filedata($file, $value);
-		if ($i == 0)
-			$current_col_num = get_file_number($value[FILE_NAME]);
-		if($column == $current_col_num)
-		{
-			// echo "[ " . $value[FILE_NAME]."] ";
-			if (check_prev_number($value[FILE_NAME], $current_col_num) == 1
-			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
-			{
-				if ($i == 0)
-					echo '<td class="ui-helper-center">';
-				if (check_youtube_video($value[$key][FILE_NAME]) == 1)
-				{
-					$yt_link = generate_yt_link($value, $key);
-					echo '<td><a href=' . $yt_link . ">" . $value[$key][FILE_NAME] .'" target="_blank">'.'</a>'.' -';
-				}
-				else
-					echo '<a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a> - <br>';
-				if ($i == $n_of_times - 1)
-					echo '</td>';
-				$i++;
-				// echo "i:$i      ";
-				$current_col_num = get_file_number($value[FILE_NAME]);
-			}
-			else
-				break;
-		}
-	}
-}
-
 #function to print in a table the output of the function read_files
 #the first array depth is the name of the folder
 #the second array depth is an array containing the path and the name of the file
@@ -528,26 +449,17 @@ tbody td, thead th {
 		if (folderisright($key) == 0)
 		{
 			echo '<tr>';
-			$isprinted = 1;
-			$i = 1;
+			$isprinted = 0;
 			$folder_name = get_name($key);
 			echo '<td>'.$folder_name.'</td>';
-		
 			foreach($value as $key2 => $folder_and_file)
 			{
-				$num_of_files = count_right_files_in_column($value, $i);
-				echo "n_of_files:$num_of_files ";
-				echo "i:$i ";
-				// if ($num_of_files >= 3)
-					print_x_files_in_column($value, $i, $num_of_files);
-				// else
-				// {
-				// 	if (check_2_files($value, $key2) == 0)
-				// 		$isprinted = print_2_files($file, $value, $key2);
-				// 	else
-				// 		print_single_file($value, $key2, $file, $isprinted);
-				// }
-				$i++;
+				$file = new filedata();
+				init_filedata($file, $folder_and_file);
+				if (check_2_files($value, $key2) == 0)
+					$isprinted = print_2_files($file, $value, $key2);
+				else
+					print_single_file($value, $key2, $file, $isprinted);
 			}
 			echo '</tr>';
 		}
@@ -557,20 +469,6 @@ tbody td, thead th {
 </tr>
 </tbody>
 <?php
-}
-
-//function that counts the number of files in the folder
-function count_files($array)
-{
-	$count = 0;
-	foreach($array as $key => $value)
-	{
-		if (folderisright($key) == 0)
-		{
-			$count += count($value);
-		}
-	}
-	return $count;
 }
 
 #function create_right_index2($array) to create another html dynamic table
@@ -722,7 +620,6 @@ function print_table_2($array)
 				$isprinted = 0;
 				$folder_name = get_name($key);
 				echo '<td>'.$folder_name.'</td>';
-				//
 				foreach($value as $key2 => $folder_and_file)
 				{
 					$file = new filedata();
@@ -800,6 +697,6 @@ function read_files($dir)
 //print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
 //print_r($right_indexed);
-print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
-//print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
+print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
+print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
 //print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
