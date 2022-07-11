@@ -1,3 +1,4 @@
+//search function for the search bar
 <script type = 'text/javascript'>
 		function myFunction(id) {
 		  var input, filter, table, tr, td, i, txtValue;
