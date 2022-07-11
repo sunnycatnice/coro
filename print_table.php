@@ -357,9 +357,9 @@ function print_x_files_in_column($array, $column, $n_of_times)
 		{
 			// echo "[ " . $value[FILE_NAME]."] ";
 			// echo check_youtube_video($file->file_name);
+			//|| check_youtube_video($value[$key][FILE_NAME]) == 1
 			if (check_prev_number($value[FILE_NAME], $current_col_num) == 1
-			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE
-			|| check_youtube_video($value[$key][FILE_NAME]) == 1)
+			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
 			{
 				if ($i == 0)
 					echo '<td class="ui-helper-center">';
@@ -723,18 +723,14 @@ function print_table_2($array)
 			if (folderisright($key) == 0)
 			{
 				echo '<tr>';
-				$isprinted = 0;
+				$i = 1;
 				$folder_name = get_name($key);
 				echo '<td>'.$folder_name.'</td>';
-				//
 				foreach($value as $key2 => $folder_and_file)
 				{
-					$file = new filedata();
-					init_filedata($file, $folder_and_file);
-					if (check_2_files($value, $key2) == 0)
-						$isprinted = print_2_files($file, $value, $key2);
-					else
-						print_single_file($value, $key2, $file, $isprinted);
+					$num_of_files = count_right_files_in_column($value, $i);
+					print_x_files_in_column($value, $i, $num_of_files);
+					$i++;
 				}
 				echo '</tr>';
 			}
@@ -803,8 +799,8 @@ function read_files($dir)
 #print the array of arrays returned by the function get_files
 //print_r(read_files("/Users/dmangola/Desktop/coro/tests"));
 //$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
-//print_r($right_indexed);
-print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
+// print_r($right_indexed);
+// print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
 // print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
-// print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
-//print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
+print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
+print_table_2(create_right_index(read_files("/Users/daniele/coro/tests")));
