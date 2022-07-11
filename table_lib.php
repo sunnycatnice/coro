@@ -14,11 +14,6 @@ class filedata
 	public $file_number;
 }
 
-function js_echo_search()
-{
-	echo "<script type=\"text/javascript\" src=\"search.js\"></script>";
-}
-
 //initialize the array to store the data of the files of the current directory
 function init_filedata($file, $folder_and_file)
 {

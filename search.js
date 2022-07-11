@@ -1,4 +1,3 @@
-<script type = 'text/javascript'>
 		function myFunction(id) {
 		  var input, filter, table, tr, td, i, txtValue;
 		  input = document.getElementById('myInput'+id);
@@ -17,4 +16,3 @@
 			}       
 		  }
 		}
-</script>
