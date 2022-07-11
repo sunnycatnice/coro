@@ -1,6 +1,6 @@
 <?php
 
-//header('Content-Type:text/plain');
+// header('Content-Type:text/plain');
 
 //constants to define better what is called what
 define("FILE_PATH", 0);
@@ -16,9 +16,6 @@ class filedata
 	public $file_name;
 	public $file_number;
 }
-
-//global variable to store wich filenumber is printed in the same column
-$number_printed_same_clmn = -1;
 
 //initialize the array to store the data of the files of the current directory
 function init_filedata($file, $folder_and_file)
@@ -38,13 +35,9 @@ function get_file_number($file_name)
 	while(is_numeric($file_name[$i]))
 	{
 		if ($i == 0)
-		{
 			$file_number = $file_name[$i];
-		}
 		else
-		{
 			$file_number = $file_number . $file_name[$i];
-		}
 		$i++;
 	}
 	return $file_number;
@@ -62,13 +55,9 @@ function folderisright($key)
 	//if the folder is right, return 0
 	$i = 0;
 	while(is_numeric($key[$i]))
-	{
 		$i++;
-	}
 	if ($i == 0)
-	{
 		return 1;
-	}
 	else
 	{
 		if ($key[$i] != "-")
@@ -95,54 +84,25 @@ function fileisright($file)
 
 function fixpath($str)
 {
-	$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/wordpress/";
+	$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/";
 	return(str_replace($str2,"", $str));
 }
 
-//function check_2_files
-//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
-//the function returns 0 if there are at least 2 files with the same first 2 characters
-//it returns 1 if there are less than 2 files with the same first 2 characters
-function check_2_files($filename, $files)
+function check_youtube_video($filename)
 {
-	$first_2_chars = substr($filename, 0, 2);
-	$count = 0;
-	foreach ($files as $file)
-	{
-		if (substr($file[FILE_NAME], 0, 2) == $first_2_chars)
-			$count++;
-	}
-	if ($count >= 2)
-		return 0;
-	else
+	if (preg_match("/watch/", $filename))
 		return 1;
+	return 0;
 }
 
-function print_single_file($file)
+function generate_yt_link($filename)
 {
-	//if this file is alrady printed in the same column, skip everything
-	// if ($file->file_number == $number_printed_same_clmn)
-	// {
-	// 	$number_printed_same_clmn = -1;
-	// 	return;
-	// }
-	if(fileisright($file->file_name) == PRINTABLE_FILE)
-		echo '<td><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
-	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
-		echo '<td></td>';
-}
-
-function print_2_files($file, $value, $key)
-{
-	$number_printed_same_clmn  = get_file_number($file->file_name);
-	echo $number_printed_same_clmn;
-	if(fileisright($file->file_name) == PRINTABLE_FILE)
-	{
-		echo '<td><a href="'.SITE_URL.fixpath($value[$key][FILE_PATH])."/".$value[$key][FILE_NAME].'" target="_blank">'.substr($value[$key][FILE_NAME],2).'</a>';
-		echo ' - <a href="'.SITE_URL.fixpath($value[$key+1][FILE_PATH])."/".$value[$key+1][FILE_NAME].'" target="_blank">'.substr($value[$key+1][FILE_NAME],2).'</a></td>';
-	}
-	elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
-		echo '<td></td>';
+	$youtube_link = "http://www.youtube.com/";
+	$youtube_link = $youtube_link . substr($filename, 2, -4);
+	//BISOGNA FARE EVENTUALMENTE 2 CAZZO DI LINK DIVERSI SE NO NON FUNZIONA. MADONNA.
+	//FINITO QUESTO BASTA.
+	$youtube_link = $youtube_link;
+	return $youtube_link;
 }
 
 //function to get how long is the number of the folder
@@ -157,7 +117,7 @@ function get_first_4_element_length($key)
 	return $count;
 }
 
-//function to estrapolate the name of the file or the folder
+//function to get the name of the file or the folder
 function get_name($key)
 {
 	$name = "";
@@ -177,33 +137,84 @@ function create_right_index($array)
 	return $array;
 }
 
-//function to count the right number of files in the folder
-function count_right_files($array)
+function check_prev_number($filename, $prev_number)
+{
+	$number = get_file_number($filename);
+	if ($number == $prev_number)
+		return 1;
+	else
+		return 0;
+}
+
+//function to count the right files in a column
+//given the array of files in a folder and the column to analize...
+//it returns the number of files in the current column ($count)
+function count_right_files_in_column($array, $column)
 {
 	$count = 0;
 	foreach ($array as $key => $value)
 	{
-		if (fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
-			$count++;
+		// echo "[ " . $value[FILE_NAME]."] ";
+		$current_col_num = get_file_number($value[FILE_NAME]);
+
+		if($column == $current_col_num)
+		{
+			if (check_prev_number($value[FILE_NAME], $current_col_num) == 1
+			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
+			{
+				$count++;
+				$current_col_num = get_file_number($value[FILE_NAME]);
+			}
+			else
+				break;
+		}
+		// echo "count:$count      ";
+		// echo "current_col_num:$current_col_num      ";
 	}
+	// echo "FINE COUNT_RIGHT_FILES_IN_COLUMN\n";
+	// echo "count:$count      ";
 	return $count;
 }
 
-//function to print x files in a row
-function print_x_files($array, $x)
+//function to print $n_of_times files in a column
+//given the array of files in a folder and the column to analize...
+//it prints using the function print_single_file the $n_of_times files in the current column
+function print_x_files_in_column($array, $column, $n_of_times)
 {
 	$i = 0;
-	foreach ($array as $key => $value)
+	// echo $n_of_times;
+	foreach($array as $key => $value)
 	{
-		if (fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
+		$file = new filedata();
+		init_filedata($file, $value);
+		if ($i == 0)
+			$current_col_num = get_file_number($value[FILE_NAME]);
+		if($column == $current_col_num)
 		{
-			print_single_file($value);
-			$i++;
-			if ($i == $x)
+			// echo "[ " . $value[FILE_NAME]."] ";
+			// echo check_youtube_video($file->file_name);
+			if (check_prev_number($value[FILE_NAME], $current_col_num) == 1
+			&& fileisright($value[FILE_NAME]) == PRINTABLE_FILE)
 			{
-				echo "</tr><tr>";
-				$i = 0;
+				if ($i == 0)
+					echo '<td class="ui-helper-center">';
+				if (check_youtube_video($file->file_name) == 1)
+				{
+					$yt_link = generate_yt_link($file->file_name);
+					echo '<a href=' . $yt_link . ">" . "VIDEO" . '</a>';
+				}
+				else
+					echo '<a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a>';
+				if ($i == $n_of_times - 1)
+					echo '</td>';
+				else
+					echo '- <br>';
+				$i++;
+				// echo "i:$i      ";
+				$current_col_num = get_file_number($value[FILE_NAME]);
 			}
+			else
+				break;
 		}
 	}
 }
@@ -215,8 +226,30 @@ function print_x_files($array, $x)
 #print on the columns the name of the files (third array depth first index)
 #every file is clickable and will open the file in a new window
 function print_table($array){
-	echo '<table>'; ?>
+	echo '<table id="myTable1">'; 
+	echo "<input type='text' id='myInput1' onkeyup='myFunction(1)' placeholder=' Cerca un brano...' title='Type in a name'>";?>	
 <style>
+
+thead, tbody, tr, td, th { display: block; }
+
+/*
+.qt-the-content table td, .qt-the-content table th {
+	border: none !important;
+	text-align: right;
+}
+*/
+
+#myInput1 {
+  background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
+  background-position: 10px 15px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid #ddd; /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
+
 table {
 	border: 1px solid #ccc;
 	border-collapse: collapse;
@@ -231,23 +264,38 @@ table caption {
 	margin: .5em 0 .75em;
 }
 
-table tr {
-	background-color: black;
-	border: 1px solid #ddd;
-	padding: .35em;
-}
-
-table th,
 table td {
 	padding: .625em;
 	text-align: center;
 }
 
-table th {
-	font-size: .85em;
-	letter-spacing: .1em;
-	text-transform: uppercase;
+tr:after {
+	content: ' ';
+	display: block;
+	visibility: hidden;
+	clear: both;
 }
+
+thead th {
+	height: 50px;
+	/*text-align: left;*/
+}
+
+tbody {
+	height: 600px;
+	overflow-y: auto;
+}
+
+thead {
+	/* fallback */
+}
+
+
+tbody td, thead th {
+	width: 13.8%;
+	float: left;
+}
+
 
 @media screen and (max-width: 600px) {
 	table {
@@ -283,10 +331,11 @@ table th {
 	}
 
 	table td::before {
-	/*
-	* aria-label has no advantage, it won't be read inside a table
-	content: attr(aria-label);
+
+	/*aria-label has no advantage, 
+	**it won't be read inside a table
 	*/
+	content: attr(aria-label);
 	content: attr(data-label);
 	float: left;
 	font-weight: bold;
@@ -298,6 +347,7 @@ table th {
 	}
 }
 </style>
+<caption>Brani in audio e spartito</caption>
 <thead>
 	<tr>
 	<th scope="col">Titolo</th>
@@ -314,42 +364,229 @@ table th {
 <?php
 	foreach($array as $key => $value)
 	{
-		echo '<tr>';
 		if (folderisright($key) == 0)
 		{
-			//new variable to store the name of the folder without the number
-			$found = 0;
-			$number_printed_same_clmn = 0;
+			echo '<tr>';
+			$isprinted = 1;
+			$i = 1;
 			$folder_name = get_name($key);
 			echo '<td>'.$folder_name.'</td>';
+		
 			foreach($value as $key2 => $folder_and_file)
 			{
-				$file = new filedata();
-				init_filedata($file, $folder_and_file);
-				//if there is present a file containing its first 2 characters equal to the first 2 characters of another file in the same folder
-				//then use the function print_2_files
-				//call to function print_x_files
-				//print_x_files($value, count_right_files($value));
-				//echo $folder_and_file;
-				if ($found == 0)
-				{
-					if (check_2_files($file->file_name, $value) == 0)
-						print_2_files($file, $value, $key2);
-					else
-						print_single_file($file);
-					$found++;
-				}
-				else
-					print_single_file($file);
+				$num_of_files = count_right_files_in_column($value, $i);
+				print_x_files_in_column($value, $i, $num_of_files);
+				$i++;
 			}
+			echo '</tr>';
 		}
-		echo '</tr>';
 	}
 	echo '</table>';
 ?>
 </tr>
 </tbody>
 <?php
+}
+
+//function that counts the number of files in the folder
+function count_files($array)
+{
+	$count = 0;
+	foreach($array as $key => $value)
+	{
+		if (folderisright($key) == 0)
+		{
+			$count += count($value);
+		}
+	}
+	return $count;
+}
+
+#function create_right_index2($array) to create another html dynamic table
+#it takes as input the array returned by read_files
+#it prints the table with the name of the folder on the first column
+#end every other column with a link to the file
+function print_table_2($array)
+{
+	echo '<br>';
+	echo '<table id="myTable2">'; 
+	echo "<input type='text' id='myInput2' onkeyup='myFunction(2)' placeholder=' Cerca un brano...' title='Type in a name'>"; ?>
+	<style>
+	
+	thead, tbody, tr, td, th { display: block; }
+	
+	/*
+	.qt-the-content table td, .qt-the-content table th {
+		border: none !important;
+		text-align: right;
+	}
+	*/
+
+	#myInput2 {
+	background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
+	background-position: 10px 15px; /* Position the search icon */
+	background-repeat: no-repeat; /* Do not repeat the icon image */
+	width: 100%; /* Full-width */
+	font-size: 16px; /* Increase font-size */
+	padding: 12px 20px 12px 40px; /* Add some padding */
+	border: 1px solid #ddd; /* Add a grey border */
+	margin-bottom: 12px; /* Add some space below the input */
+  	} 
+	
+	table {
+		border: 1px solid #ccc;
+		border-collapse: collapse;
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		table-layout: fixed;
+	}
+	
+	table caption {
+		font-size: 1.5em;
+		margin: .5em 0 .75em;
+	}
+	
+	table td {
+		padding: .625em;
+		text-align: center;
+	}
+	
+	tr:after {
+		content: ' ';
+		display: block;
+		visibility: hidden;
+		clear: both;
+	}
+	
+	thead th {
+		height: 50px;
+		/*text-align: left;*/
+	}
+	
+	tbody {
+		height: 600px;
+		overflow-y: auto;
+	}
+	
+	thead {
+		/* fallback */
+	}
+	
+	
+	tbody td, thead th {
+		width: 13.8%;
+		float: left;
+	}
+	
+	
+	@media screen and (max-width: 600px) {
+		table {
+		border: 0;
+		}
+	
+		table caption {
+		font-size: 1.3em;
+		}
+	
+		table thead {
+		border: none;
+		clip: rect(0 0 0 0);
+		height: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+		width: 1px;
+		}
+	
+		table tr {
+		border-bottom: 3px solid #ddd;
+		display: block;
+		margin-bottom: .625em;
+		}
+	
+		table td {
+		border-bottom: 1px solid #ddd;
+		display: block;
+		font-size: .8em;
+		text-align: right;
+		}
+	
+		table td::before {
+	
+		/*aria-label has no advantage, 
+		**it won't be read inside a table
+		*/
+		content: attr(aria-label);
+		content: attr(data-label);
+		float: left;
+		font-weight: bold;
+		text-transform: uppercase;
+		}
+	
+		table td:last-child {
+		border-bottom: 0;
+		}
+	}
+	</style>
+	<caption>LA RISURREZIONE di G. Zelioli</caption>
+	<thead>
+		<tr>
+		<th scope="col">Titolo</th>
+		<th scope="col">Soprani</th>
+		<th scope="col">Contralti</th>
+		<th scope="col">Tenori</th>
+		<th scope="col">Bassi</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+	<?php
+		foreach($array as $key => $value)
+		{
+			if (folderisright($key) == 0)
+			{
+				echo '<tr>';
+				$i = 1;
+				$folder_name = get_name($key);
+				echo '<td>'.$folder_name.'</td>';
+				foreach($value as $key2 => $folder_and_file)
+				{
+					$num_of_files = count_right_files_in_column($value, $i);
+					print_x_files_in_column($value, $i, $num_of_files);
+					$i++;
+				}
+				echo '</tr>';
+			}
+		}
+		echo '</table>'; 
+		
+		echo "<script type = 'text/javascript'>
+		function myFunction(id) {
+		  var input, filter, table, tr, td, i, txtValue;
+		  input = document.getElementById('myInput'+id);
+		  filter = input.value.toUpperCase();
+		  table = document.getElementById('myTable'+id);
+		  tr = table.getElementsByTagName('tr');
+		  for (i = 0; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName('td')[0];
+			if (td) {
+			  txtValue = td.textContent || td.innerText;
+			  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+				tr[i].style.display = '';
+			  } else {
+				tr[i].style.display = 'none';
+			  }
+			}       
+		  }
+		}
+		</script>";
+	?>
+	</tr>
+	</tbody>
+	<?php
+
 }
 
 #php function that reads the files from the directory passed to it
@@ -373,7 +610,7 @@ function read_files($dir)
 			else
 			{
 				$ext = pathinfo($value, PATHINFO_EXTENSION);
-				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt")
+				if ($ext == "mp3" || $ext == "pdf" || $ext == "txt" || $ext == "JPG")
 				{
 						$files[$i] = array($dir, $value);
 				}
@@ -383,9 +620,8 @@ function read_files($dir)
 	}
 	return $files;
 }
-#print the array of arrays returned by the function get_files
-//print_r(read_files("/Users/daniele/coro/tests"));
-//$right_indexed = create_right_index(read_files("C:\\Users\\danie\\Desktop\\The BIG project\\coro\\tests"));
-//print_r($right_indexed);
+
+// print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
+// print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
 print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
-//print_table(read_files("/Users/dmangola/Desktop/coro/index.php"));
+print_table_2(create_right_index(read_files("/Users/daniele/coro/tests")));
