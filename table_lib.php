@@ -162,6 +162,8 @@ function count_right_files_in_column($array, $column)
 				$count++;
 				$current_col_num = get_file_number($value[FILE_NAME]);
 			}
+			elseif(fileisright($value[FILE_NAME]) == SKIPPABLE_FILE)
+				echo '<td></td>';
 			else
 				break;
 		}
