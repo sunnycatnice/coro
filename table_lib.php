@@ -4,7 +4,7 @@ define("FILE_PATH", 0);
 define("FILE_NAME", 1);
 define("PRINTABLE_FILE", 0);
 define("SKIPPABLE_FILE", -1);
-define("SITE_URL", "http://www.coralesantalessandro.com/");
+define("SITE_URL", "https://www.coralesantalessandro.com/");
 
 //class structure to store datas from every file of the current directory
 class filedata
@@ -81,7 +81,7 @@ function fileisright($file)
 
 function fixpath($str)
 {
-	$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/";
+	$str2 = "/data/vhosts/coralesantalessandro.com/httpsdocs/";
 	return(str_replace($str2,"", $str));
 }
 
@@ -162,8 +162,6 @@ function count_right_files_in_column($array, $column)
 				$count++;
 				$current_col_num = get_file_number($value[FILE_NAME]);
 			}
-			elseif(fileisright($value[FILE_NAME]) == SKIPPABLE_FILE)
-				echo '<td></td>';
 			else
 				break;
 		}

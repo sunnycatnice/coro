@@ -12,140 +12,26 @@ require_once('table_lib.php');
 #every file is clickable and will open the file in a new window
 function print_table($array){
 	echo '<table id="myTable1">'; 
-	echo "<input type='text' id='myInput1' onkeyup='myFunction(1)' placeholder=' Cerca un brano...' title='Type in a name'>";?>	
-<style>
+	echo "<input type='text' id='myInput1' onkeyup='myFunction(1)' placeholder=' Cerca un brano...' title='Type in a name'>";	
 
-thead, tbody, tr, td, th { display: block; }
+	//include main.css
+	echo '<link rel="stylesheet" type="text/css" href="https://coralesantalessandro.com/lib_areariservata/CSS/main.css">';
 
-/*
-.qt-the-content table td, .qt-the-content table th {
-	border: none !important;
-	text-align: right;
-}
-*/
-
-#myInput1 {
-  background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
-  background-position: 10px 15px; /* Position the search icon */
-  background-repeat: no-repeat; /* Do not repeat the icon image */
-  width: 100%; /* Full-width */
-  font-size: 16px; /* Increase font-size */
-  padding: 12px 20px 12px 40px; /* Add some padding */
-  border: 1px solid #ddd; /* Add a grey border */
-  margin-bottom: 12px; /* Add some space below the input */
-}
-
-table {
-	border: 1px solid #ccc;
-	border-collapse: collapse;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	table-layout: fixed;
-}
-
-table caption {
-	font-size: 1.5em;
-	margin: .5em 0 .75em;
-}
-
-table td {
-	padding: .625em;
-	text-align: center;
-}
-
-tr:after {
-	content: ' ';
-	display: block;
-	visibility: hidden;
-	clear: both;
-}
-
-thead th {
-	height: 50px;
-	/*text-align: left;*/
-}
-
-tbody {
-	height: 600px;
-	overflow-y: auto;
-}
-
-thead {
-	/* fallback */
-}
-
-
-tbody td, thead th {
-	width: 13.8%;
-	float: left;
-}
-
-
-@media screen and (max-width: 600px) {
-	table {
-	border: 0;
-	}
-
-	table caption {
-	font-size: 1.3em;
-	}
-
-	table thead {
-	border: none;
-	clip: rect(0 0 0 0);
-	height: 1px;
-	margin: -1px;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
-	width: 1px;
-	}
-
-	table tr {
-	border-bottom: 3px solid #ddd;
-	display: block;
-	margin-bottom: .625em;
-	}
-
-	table td {
-	border-bottom: 1px solid #ddd;
-	display: block;
-	font-size: .8em;
-	text-align: right;
-	}
-
-	table td::before {
-
-	/*aria-label has no advantage, 
-	**it won't be read inside a table
-	*/
-	content: attr(aria-label);
-	content: attr(data-label);
-	float: left;
-	font-weight: bold;
-	text-transform: uppercase;
-	}
-
-	table td:last-child {
-	border-bottom: 0;
-	}
-}
-</style>
-<caption>Brani in audio e spartito</caption>
-<thead>
-	<tr>
-	<th scope="col">Titolo</th>
-	<th scope="col">Soprani</th>
-	<th scope="col">Contralti</th>
-	<th scope="col">Tenori</th>
-	<th scope="col">Bassi</th>
-	<th scope="col">Spartito</th>
-	<th scope="col">Ascolta</th>
-	</tr>
-</thead>
-<tbody>
-	<tr>
+	?>
+	<caption>Brani in audio e spartito</caption>
+	<thead>
+		<tr>
+		<th scope="col">Titolo</th>
+		<th scope="col">Soprani</th>
+		<th scope="col">Contralti</th>
+		<th scope="col">Tenori</th>
+		<th scope="col">Bassi</th>
+		<th scope="col">Spartito</th>
+		<th scope="col">Ascolta</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
 <?php
 	foreach($array as $key => $value)
 	{
@@ -181,126 +67,12 @@ function print_table_2($array)
 {
 	echo '<br>';
 	echo '<table id="myTable2">'; 
-	echo "<input type='text' id='myInput2' onkeyup='myFunction(2)' placeholder=' Cerca un brano...' title='Type in a name'>"; ?>
-	<style>
-	
-	thead, tbody, tr, td, th { display: block; }
-	
-	/*
-	.qt-the-content table td, .qt-the-content table th {
-		border: none !important;
-		text-align: right;
-	}
-	*/
+	echo "<input type='text' id='myInput2' onkeyup='myFunction(2)' placeholder=' Cerca un brano...' title='Type in a name'>";
 
-	#myInput2 {
-	background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
-	background-position: 10px 15px; /* Position the search icon */
-	background-repeat: no-repeat; /* Do not repeat the icon image */
-	width: 100%; /* Full-width */
-	font-size: 16px; /* Increase font-size */
-	padding: 12px 20px 12px 40px; /* Add some padding */
-	border: 1px solid #ddd; /* Add a grey border */
-	margin-bottom: 12px; /* Add some space below the input */
-  	} 
-	
-	table {
-		border: 1px solid #ccc;
-		border-collapse: collapse;
-		margin: 0;
-		padding: 0;
-		width: 100%;
-		table-layout: fixed;
-	}
-	
-	table caption {
-		font-size: 1.5em;
-		margin: .5em 0 .75em;
-	}
-	
-	table td {
-		padding: .625em;
-		text-align: center;
-	}
-	
-	tr:after {
-		content: ' ';
-		display: block;
-		visibility: hidden;
-		clear: both;
-	}
-	
-	thead th {
-		height: 50px;
-		/*text-align: left;*/
-	}
-	
-	tbody {
-		height: 600px;
-		overflow-y: auto;
-	}
-	
-	thead {
-		/* fallback */
-	}
-	
-	
-	tbody td, thead th {
-		width: 13.8%;
-		float: left;
-	}
-	
-	
-	@media screen and (max-width: 600px) {
-		table {
-		border: 0;
-		}
-	
-		table caption {
-		font-size: 1.3em;
-		}
-	
-		table thead {
-		border: none;
-		clip: rect(0 0 0 0);
-		height: 1px;
-		margin: -1px;
-		overflow: hidden;
-		padding: 0;
-		position: absolute;
-		width: 1px;
-		}
-	
-		table tr {
-		border-bottom: 3px solid #ddd;
-		display: block;
-		margin-bottom: .625em;
-		}
-	
-		table td {
-		border-bottom: 1px solid #ddd;
-		display: block;
-		font-size: .8em;
-		text-align: right;
-		}
-	
-		table td::before {
-	
-		/*aria-label has no advantage, 
-		**it won't be read inside a table
-		*/
-		content: attr(aria-label);
-		content: attr(data-label);
-		float: left;
-		font-weight: bold;
-		text-transform: uppercase;
-		}
-	
-		table td:last-child {
-		border-bottom: 0;
-		}
-	}
-	</style>
+	// <!-- <link rel="stylesheet" href="http://coralesantalessandro.com/lib_areariservata/CSS/main.css" type="text/css"> -->
+	echo '<link rel="stylesheet" type="text/css" href="https://coralesantalessandro.com/lib_areariservata/CSS/main.css">';
+
+	?>
 	<caption>LA RISURREZIONE di G. Zelioli</caption>
 	<thead>
 		<tr>
@@ -333,30 +105,7 @@ function print_table_2($array)
 		}
 		echo '</table>';
 
-		//non so perchè non funziona sul server ok localhost
-		// echo "<script type=\"text/javascript\" src=\"search.js?ver=107\"></script>";
-		// echo "<script type=\"text/javascript\" src=\"/data/vhosts/coralesantalessandro.com/httpdocs/search.js?ver=107\"></script>";
-
-		echo "<script type = 'text/javascript'>
-		function myFunction(id) {
-		  var input, filter, table, tr, td, i, txtValue;
-		  input = document.getElementById('myInput'+id);
-		  filter = input.value.toUpperCase();
-		  table = document.getElementById('myTable'+id);
-		  tr = table.getElementsByTagName('tr');
-		  for (i = 0; i < tr.length; i++) {
-			td = tr[i].getElementsByTagName('td')[0];
-			if (td) {
-			  txtValue = td.textContent || td.innerText;
-			  if (txtValue.toUpperCase().indexOf(filter) > -1) {
-				tr[i].style.display = '';
-			  } else {
-				tr[i].style.display = 'none';
-			  }
-			}       
-		  }
-		}
-		</script>";
+		echo "<script type=\"text/javascript\" src=\"http://coralesantalessandro.com/search.js?ver=107\"></script>";
 		?>
 	</tr>
 	</tbody>
@@ -396,7 +145,7 @@ function read_files($dir)
 	return $files;
 }
 
-// print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved")));
-// print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/table2")));
-print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
-print_table_2(create_right_index(read_files("/Users/daniele/coro/tests")));
+print_table(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpsdocs/reserved")));
+print_table_2(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpsdocs/reserved/table2")));
+// print_table(create_right_index(read_files("/Users/daniele/coro/tests")));
+// print_table_2(create_right_index(read_files("/Users/daniele/coro/tests")));
