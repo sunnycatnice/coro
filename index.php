@@ -105,7 +105,7 @@ function print_table_2($array)
 		}
 		echo '</table>';
 
-		echo "<script type=\"text/javascript\" src=\"http://coralesantalessandro.com/search.js?ver=107\"></script>";
+		echo "<script type=\"text/javascript\" src=\"https://coralesantalessandro.com/search.js?ver=107\"></script>";
 		?>
 	</tr>
 	</tbody>

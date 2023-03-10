@@ -1,4 +1,10 @@
-thead, tbody, tr, td, th { display: block; }
+thead,
+tbody,
+tr,
+td,
+th {
+  display: block;
+}
 
 /*
 .qt-the-content table td, .qt-the-content table th {
@@ -8,84 +14,83 @@ thead, tbody, tr, td, th { display: block; }
 */
 
 #myInput1 {
-background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
-background-position: 10px 15px; /* Position the search icon */
-background-repeat: no-repeat; /* Do not repeat the icon image */
-width: 100%; /* Full-width */
-font-size: 16px; /* Increase font-size */
-padding: 12px 20px 12px 40px; /* Add some padding */
-border: 1px solid rgb(255, 248, 248); /* Add a grey border */
-margin-bottom: 12px; /* Add some space below the input */
-} 
+  background-image: url("https://www.coralesantalessandro.com/reserved/utils/search.svg"); /* Add a search icon to input */
+  background-position: 10px 15px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid rgb(255, 248, 248); /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
 
 #myInput2 {
-background-image: url('http://coralesantalessandro.com/reserved/utils/search.svg'); /* Add a search icon to input */
-background-position: 10px 15px; /* Position the search icon */
-background-repeat: no-repeat; /* Do not repeat the icon image */
-width: 100%; /* Full-width */
-font-size: 16px; /* Increase font-size */
-padding: 12px 20px 12px 40px; /* Add some padding */
-border: 1px solid rgb(255, 248, 248); /* Add a grey border */
-margin-bottom: 12px; /* Add some space below the input */
-} 
+  background-image: url("https://www.coralesantalessandro.com/reserved/utils/search.svg"); /* Add a search icon to input */
+  background-position: 10px 15px; /* Position the search icon */
+  background-repeat: no-repeat; /* Do not repeat the icon image */
+  width: 100%; /* Full-width */
+  font-size: 16px; /* Increase font-size */
+  padding: 12px 20px 12px 40px; /* Add some padding */
+  border: 1px solid rgb(255, 248, 248); /* Add a grey border */
+  margin-bottom: 12px; /* Add some space below the input */
+}
 
 table {
-    border: 1px solid #ccc;
-    border-collapse: collapse;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    table-layout: fixed;
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
 }
 
 table caption {
-    font-size: 1.5em;
-    margin: .5em 0 .75em;
+  font-size: 1.5em;
+  margin: 0.5em 0 0.75em;
 }
 
 table td {
-    padding: .625em;
-    text-align: center;
+  padding: 0.625em;
+  text-align: center;
 }
 
 tr:after {
-    content: ' ';
-    display: block;
-    visibility: hidden;
-    clear: both;
+  content: " ";
+  display: block;
+  visibility: hidden;
+  clear: both;
 }
 
 thead th {
-    height: 50px;
-    /*text-align: left;*/
+  height: 50px;
+  /*text-align: left;*/
 }
 
 tbody {
-    height: 600px;
-    overflow-y: auto;
+  height: 600px;
+  overflow-y: auto;
 }
 
 thead {
-    /* fallback */
+  /* fallback */
 }
 
-
-tbody td, thead th {
-    width: 13.8%;
-    float: left;
+tbody td,
+thead th {
+  width: 13.8%;
+  float: left;
 }
-
 
 @media screen and (max-width: 600px) {
-    table {
+  table {
     border: 0;
-    }
+  }
 
-    table caption {
+  table caption {
     font-size: 1.3em;
-    }
+  }
 
-    table thead {
+  table thead {
     border: none;
     clip: rect(0 0 0 0);
     height: 1px;
@@ -94,23 +99,22 @@ tbody td, thead th {
     padding: 0;
     position: absolute;
     width: 1px;
-    }
+  }
 
-    table tr {
+  table tr {
     border-bottom: 3px solid #ddd;
     display: block;
-    margin-bottom: .625em;
-    }
+    margin-bottom: 0.625em;
+  }
 
-    table td {
+  table td {
     border-bottom: 1px solid #ddd;
     display: block;
-    font-size: .8em;
+    font-size: 0.8em;
     text-align: right;
-    }
+  }
 
-    table td::before {
-
+  table td::before {
     /*aria-label has no advantage, 
     **it won't be read inside a table
     */
@@ -119,9 +123,9 @@ tbody td, thead th {
     float: left;
     font-weight: bold;
     text-transform: uppercase;
-    }
+  }
 
-    table td:last-child {
+  table td:last-child {
     border-bottom: 0;
-    }
+  }
 }
