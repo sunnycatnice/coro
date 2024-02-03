@@ -90,11 +90,22 @@ function fileisright($file)
 	return 1;
 }
 
-function fixpath($str)
-{
-	$str2 = "/data/vhosts/coralesantalessandro.com/httpdocs/";
-	return(str_replace($str2,"", $str));
+function fixpath($str) {
+    // Definisci il percorso base da rimuovere
+    $base_path = "/data/vhosts/coralesantalessandro.com/httpsdocs/";
+
+    // Verifica se il percorso base è all'inizio della stringa
+    if (strpos($str, $base_path) === 0) {
+        // Rimuovi il percorso base dalla stringa
+        $str = substr($str, strlen($base_path));
+    }
+    
+    // Rimuovi eventuali slash iniziali rimanenti per evitare URL errati
+    $str = ltrim($str, '/');
+
+    return $str;
 }
+
 
 //function check_2_files($file_name, $file_number, $key, $file_array)
 //if the current file number is equal to the next one, it means that the file is a duplicate, then the function returns 0
@@ -122,6 +133,7 @@ function print_single_file($file, $isprinted)
 		if(fileisright($file->file_name) == PRINTABLE_FILE)
 		{
 			echo '<td class="ui-helper-center"><a href="'.SITE_URL.fixpath($file->file_path)."/".$file->file_name.'" target="_blank">'.substr($file->file_name,2).'</a></td>';
+			
 			//add to the previous td a class to center the text
 		}
 		elseif(fileisright($file->file_name) == SKIPPABLE_FILE)
@@ -372,4 +384,4 @@ function read_files($dir)
 	return $files;
 }
 
-print_table_sunday(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpdocs/reserved/tablesunday")));
+print_table_sunday(create_right_index(read_files("/data/vhosts/coralesantalessandro.com/httpsdocs/reserved/tablesunday")));
